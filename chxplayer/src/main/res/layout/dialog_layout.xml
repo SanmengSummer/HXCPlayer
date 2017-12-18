@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/shape_dialog"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/x30"
+        android:layout_marginTop="@dimen/x60"
+        android:background="@color/colorTransparent"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.5"
+        android:text="@string/text_no_idea_play"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x30" />
+
+    <LinearLayout
+        android:id="@+id/dialog_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/x60"
+        android:layout_marginTop="@dimen/x30"
+        android:background="@color/colorTransparent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_common_btn_bg_new"
+            android:focusable="true"
+            android:paddingBottom="@dimen/x5"
+            android:paddingLeft="@dimen/x20"
+            android:paddingRight="@dimen/x20"
+            android:paddingTop="@dimen/x5"
+            android:text="@string/text_exit_play"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x25">
+
+            <requestFocus />
+        </Button>
+
+        <Button
+            android:id="@+id/btn_re_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/x70"
+            android:background="@drawable/selector_common_btn_bg_new"
+            android:focusable="true"
+            android:paddingBottom="@dimen/x5"
+            android:paddingLeft="@dimen/x32"
+            android:paddingRight="@dimen/x32"
+            android:paddingTop="@dimen/x5"
+            android:text="@string/text_updata"
+            android:textColor="@color/focus"
+            android:textSize="@dimen/x25" />
+    </LinearLayout>
+
+</LinearLayout>
