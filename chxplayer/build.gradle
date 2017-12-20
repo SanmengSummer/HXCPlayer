@@ -1,11 +1,13 @@
-apply plugin: 'com.android.application'
-
+//apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.SanmengSummer'
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
 
     defaultConfig {
-        applicationId "com.huan.huaxia.chxplayer"
+//        applicationId "com.huan.huaxia.chxplayer"
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1

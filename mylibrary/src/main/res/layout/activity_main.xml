@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.huan.huaxia.chxplayer.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <com.huan.huaxia.chxplayer.widght.HXIjkVideoView
+            android:id="@+id/player_video"
+            android:layout_width="@dimen/x600"
+            android:layout_height="@dimen/x400"
+            android:focusable="true" />
+
+
+        <com.huan.huaxia.chxplayer.widght.SimpleVideoView
+            android:id="@+id/player_video2"
+            android:layout_width="@dimen/x600"
+            android:layout_height="@dimen/x400"
+            android:focusable="true" />
+
+        <Button
+            android:id="@+id/btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:focusable="true"
+            android:text="播放">
+
+            <requestFocus />
+        </Button>
+    </LinearLayout>
+</ScrollView>
