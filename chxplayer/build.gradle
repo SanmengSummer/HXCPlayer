@@ -40,8 +40,9 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
 }
 
+apply from: 'bintrayUpload.gradle'
 
-
+/*
 //////////////////////////////
 def siteUrl = 'https://github.com/SanmengSummer/HXCPlayer'                        // #CONFIG# // project homepage
 def gitUrl = 'https://github.com/SanmengSummer/HXCPlayer.git'                     // #CONFIG# // project git
@@ -110,11 +111,15 @@ bintray {
     key = isHasFile ? properties.getProperty("bintray.apikey") : System.getenv("bintray.apikey")
     configurations = ['archives']
     pkg {
-        repo = "maven"
-        name = "chxplayer"                                                 // #CONFIG# project name in jcenter
+        userOrg = 'sanmeng'
+        repo = "hxcplayer"
+        name = "hxcplayer"
+        // #CONFIG# project name in jcenter
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = ["Apache-2.0"]
         publish = true
+        publicDownloadNumbers = true
+        labels = ['player', 'play', 'chx']
     }
-}
+}*/
