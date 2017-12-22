@@ -1,1 +1,1 @@
-include ':chxplayer', ':mylibrary'
+include ':chxplayer'
