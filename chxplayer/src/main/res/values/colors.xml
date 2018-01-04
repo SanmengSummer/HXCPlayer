@@ -11,4 +11,5 @@
     <color name="focus">#00ace0</color>
     <color name="white">#fff</color>
     <color name="black">#151414</color>
+    <color name="light_black">#000</color>
 </resources>

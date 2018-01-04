@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_screen_luminance"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"
+    android:layout_centerVertical="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingRight="@dimen/x50"
+    android:visibility="gone">
+
+    <ImageView
+        android:id="@+id/iv_screen_luminance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/brightness_video" />
+
+    <TextView
+        android:id="@+id/tv__screen_luminance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/x5"
+        android:text="10%"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x30" />
+</LinearLayout>

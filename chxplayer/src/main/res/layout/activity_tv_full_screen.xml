@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:test="http://schemas.android.com/apk/com.huan.huaxia.chxplayer">
+
+    <com.huan.huaxia.chxplayer.widght.hxplayer.TvPlayer
+        android:id="@+id/player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.huan.huaxia.chxplayer.widght.hxplayer.PlayerController
+        android:id="@+id/controller"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        test:isTv="true" />
+
+</RelativeLayout>
