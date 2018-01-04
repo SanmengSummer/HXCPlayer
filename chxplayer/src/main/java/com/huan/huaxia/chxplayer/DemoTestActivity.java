@@ -63,11 +63,11 @@ public class DemoTestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo_test);
-//        mPlayerView = (PhonePlayer) findViewById(R.id.player_video);
+        mPlayerView = (PhonePlayer) findViewById(R.id.player_video);
         mPlayerView2 = (TvPlayer) findViewById(R.id.player_video2);
         Button btn = (Button) findViewById(R.id.btn);
         Button btn2 = (Button) findViewById(R.id.btn2);
-//        mPlayerView.setVideoList(playList, false);
+        mPlayerView.setVideoList(playList, false);
         mPlayerView2.setVideoList(playList, true);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override

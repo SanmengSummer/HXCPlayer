@@ -134,16 +134,16 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
 
     @Override
     protected void onResume() {
-        super.onResume();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);//设置成全屏模式
         mHandler.sendEmptyMessage(UPDATE_PLAYTIME);
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
         player.pause();
-        super.onPause();
         mHandler.removeMessages(UPDATE_PLAYTIME);
+        super.onPause();
     }
 
     @Override
@@ -152,6 +152,7 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
         playEvent.setIndex(player.index);
         playEvent.setPlaying(player.isPlaying());
         EventBus.getDefault().post(playEvent);
+        mHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 
@@ -255,7 +256,6 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
     };
 
     private void updatePlayTime() {
-
         controller.mIvPlay.setVisibility(player.isPlaying() ? GONE : VISIBLE);
         controller.mIvPlay.setImageResource(player.isPlaying() ? R.drawable.play_selector : R.drawable.pause_selector);
         controller.mIvPlayPause.setImageResource(player.isPlaying() ? R.drawable.play_selector : R.drawable.pause_selector);

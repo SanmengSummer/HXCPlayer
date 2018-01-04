@@ -8,17 +8,17 @@
     tools:context="com.huan.huaxia.chxplayer.DemoTestActivity">
 
 
-    <!--<com.huan.huaxia.chxplayer.widght.hxplayer.PhonePlayer
+    <com.huan.huaxia.chxplayer.widght.hxplayer.PhonePlayer
         android:id="@+id/player_video"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />-->
+        android:layout_width="@dimen/x300"
+        android:layout_height="@dimen/x200"
+        />
 
 
     <com.huan.huaxia.chxplayer.widght.hxplayer.TvPlayer
         android:id="@+id/player_video2"
-        android:layout_width="@dimen/x600"
-        android:layout_height="@dimen/x400" />
+        android:layout_width="@dimen/x300"
+        android:layout_height="@dimen/x200" />
 
     <Button
         android:id="@+id/btn"

@@ -3,7 +3,7 @@ package com.huan.huaxia.chxplayer.widght.model;
 import java.io.Serializable;
 
 /**
- * Created by admin on 2018/1/3.
+ * Created by huaxia on 2018/1/3.
  */
 
 public class FileInfo implements Serializable {
