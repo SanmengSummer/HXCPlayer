@@ -38,6 +38,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'org.greenrobot:eventbus:3.0.0'
+//    compile 'com.huan:library:1.2.1'
 }
 
 apply from: 'bintrayUpload.gradle'

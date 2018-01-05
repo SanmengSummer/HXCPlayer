@@ -198,5 +198,6 @@ public class SimplePlayer extends BasePlayer {
     @Override
     public void releaseWithoutStop() {
         super.releaseWithoutStop();
+        IjkMediaPlayer.native_profileEnd();
     }
 }
