@@ -220,27 +220,20 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     @Override
     public void onClick(View view) {
         if (null != mControllerListener)
-            switch (view.getId()) {
-                case R.id.iv_play_pause:
-                case R.id.iv_play:
-                    mControllerListener.controllerPlayPause();
-                    break;
-                case R.id.iv_list:
-                    mControllerListener.controllerList();
-                    break;
-                case R.id.iv_zoom:
-                    mControllerListener.controllerZoom();
-                    break;
-                case R.id.iv_back:
-                    mControllerListener.controllerBack();
-                    break;
-                case R.id.iv_backward:
-                    mControllerListener.controllerBackward();
-                    break;
-                case R.id.iv_forward:
-                    mControllerListener.controllerForward();
-                    break;
-            }
+            if (view.getId() == R.id.iv_play_pause || view.getId() == R.id.iv_play)
+                mControllerListener.controllerPlayPause();
+            else if (view.getId() == R.id.iv_list)
+                mControllerListener.controllerList();
+            else if (view.getId() == R.id.iv_zoom)
+                mControllerListener.controllerZoom();
+            else if (view.getId() == R.id.iv_back)
+                mControllerListener.controllerBack();
+            else if (view.getId() == R.id.iv_backward)
+                mControllerListener.controllerBackward();
+            else if (view.getId() == R.id.iv_forward)
+                mControllerListener.controllerForward();
+
+
     }
 
     @Override
