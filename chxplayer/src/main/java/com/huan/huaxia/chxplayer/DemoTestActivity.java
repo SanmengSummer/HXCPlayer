@@ -16,8 +16,8 @@ public class DemoTestActivity extends AppCompatActivity {
     private static ArrayList<MediaModel> playList = new ArrayList<>();
 
     static {
-        list.add("http://192.168.80.178:8080/hh.mp4");
-        list.add("http://192.168.80.178:8080/yij.mp4");
+        list.add("http://192.168.80.78:8080/hh.mp4");
+        list.add("http://192.168.80.78:8080/yij.mp4");
         list.add("http://s2.i.qingcdn.com/edu-test-output/CDN2016091200001_master_playlist.m3u8");
         list.add("http://lecloud.educdn.huan.tv/mediadns/ts/BBS/GXHZ/cdn2017042700001.ts");
         list.add("http://s2.i.qingcdn.com/edu-test-output/CDN2016091200001_848x480.m3u8");
@@ -65,6 +65,7 @@ public class DemoTestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_demo_test);
         mPlayerView = (PhonePlayer) findViewById(R.id.player_video);
         mPlayerView2 = (TvPlayer) findViewById(R.id.player_video2);
+        mPlayerView2.setVisibility(View.GONE);
         Button btn = (Button) findViewById(R.id.btn);
         Button btn2 = (Button) findViewById(R.id.btn2);
         mPlayerView.setVideoList(playList, false);

@@ -288,7 +288,7 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener 
     }
 
     public void showZoom() {
-        PlayerUtils.skipFullScreenPlayer((Activity) mContext, this, isSkipFullScreenPlayer, isFullScreen, isTV, width, height, mPlayList, index, getCurrentPosition(), isPlaying());
+        PlayerUtils.skipFullScreenPlayer((Activity) mContext, getParent(), this, isSkipFullScreenPlayer, isFullScreen, isTV, width, height, mPlayList, index, getCurrentPosition(), isPlaying());
         if (!isSkipFullScreenPlayer) setFullScreen(!isFullScreen);
 
     }

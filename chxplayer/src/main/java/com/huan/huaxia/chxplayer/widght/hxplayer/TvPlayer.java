@@ -51,7 +51,7 @@ public class TvPlayer extends SimplePlayer {
     }
 
     public void zoom() {
-        PlayerUtils.skipFullScreenPlayer((Activity) mContext, this, isSkipFullScreenPlayer, isFullScreen, true, width, height, mPlayList, index, getCurrentPosition(), isPlaying());
+        PlayerUtils.skipFullScreenPlayer((Activity) mContext, getParent(), this, isSkipFullScreenPlayer, isFullScreen, true, width, height, mPlayList, index, getCurrentPosition(), isPlaying());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行

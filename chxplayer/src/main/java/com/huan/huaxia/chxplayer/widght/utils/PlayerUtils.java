@@ -2,9 +2,13 @@ package com.huan.huaxia.chxplayer.widght.utils;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.huan.huaxia.chxplayer.widght.hxplayer.FullScreenPlayer;
 import com.huan.huaxia.chxplayer.widght.hxplayer.SimplePlayer;
@@ -74,13 +78,13 @@ public class PlayerUtils {
      * @param height           小屏player高
      * @param mPlayList        播放列表
      */
-    public static void skipFullScreenPlayer(Activity activity, SimplePlayer player, boolean isSkipFullScreen, boolean isFullScreen, boolean isTV, int width, int height, ArrayList<MediaModel> mPlayList) {
+    public static void skipFullScreenPlayer(Activity activity, ViewParent parent, SimplePlayer player, boolean isSkipFullScreen, boolean isFullScreen, boolean isTV, int width, int height, ArrayList<MediaModel> mPlayList) {
         if (isSkipFullScreen && !isFullScreen) {
             activity.startActivity(isTV ? TvFullScreenPlayer.newIntent(activity, mPlayList)
                     : FullScreenPlayer.newIntent(activity, mPlayList));
             player.pause();
         } else {
-            skipFullScreenPlayer(activity, player, isSkipFullScreen, isFullScreen, isTV, width, height, mPlayList, 0, 0, false);
+            skipFullScreenPlayer(activity, parent, player, isSkipFullScreen, isFullScreen, isTV, width, height, mPlayList, 0, 0, false);
         }
     }
 
@@ -99,7 +103,7 @@ public class PlayerUtils {
      * @param currentPosition  当前播放的时间
      * @param isPlaying        当前是否在播放
      */
-    public static void skipFullScreenPlayer(Activity activity, SimplePlayer player, boolean isSkipFullScreen, boolean isFullScreen, boolean isTV, int width, int height, ArrayList<MediaModel> mPlayList, int index, int currentPosition, boolean isPlaying) {
+    public static void skipFullScreenPlayer(Activity activity, ViewParent parent, SimplePlayer player, boolean isSkipFullScreen, boolean isFullScreen, boolean isTV, int width, int height, ArrayList<MediaModel> mPlayList, int index, int currentPosition, boolean isPlaying) {
         if (isSkipFullScreen) {
             if (isFullScreen) {
                 activity.finish();
@@ -109,11 +113,11 @@ public class PlayerUtils {
                 player.pause();
             }
         } else {
-            setNativeFull(activity, player, isFullScreen, isTV, width, height);
+            setNativeFull(activity, parent, player, isFullScreen, isTV, width, height);
         }
     }
 
-    private static void setNativeFull(Activity activity, SimplePlayer player, boolean isFullScreen, boolean isTV, int width, int height) {
+    private static void setNativeFull(Activity activity, ViewParent parent, SimplePlayer player, boolean isFullScreen, boolean isTV, int width, int height) {
         WindowManager manager = activity.getWindowManager();
         DisplayMetrics metrics = new DisplayMetrics();
         manager.getDefaultDisplay().getMetrics(metrics);
@@ -121,13 +125,40 @@ public class PlayerUtils {
         int windowWidth = metrics.widthPixels;//windowWidth
 //        View vp = activity.findViewById(Window.ID_ANDROID_CONTENT);//获取当前window
 //        color = vp.getDrawingCacheBackgroundColor();//获取当前页面背景颜色RelativeLayout
-        LinearLayout.LayoutParams horizontalFull = new LinearLayout.LayoutParams(
-                windowHeight, windowWidth);//phone版横屏；
-        LinearLayout.LayoutParams verticalFull = new LinearLayout.LayoutParams(
-                windowWidth, windowHeight);//tv版不变；
-        LinearLayout.LayoutParams normalSize = new LinearLayout.LayoutParams(
-                width, height);//原player尺寸；
-        player.setLayoutParams(isFullScreen ? normalSize : isTV ? verticalFull : horizontalFull);
+        //适配父控件的Class类
+        if (parent instanceof RelativeLayout) {
+            RelativeLayout.LayoutParams horizontalFull = new RelativeLayout.LayoutParams(
+                    windowHeight, windowWidth);//phone版横屏；
+            RelativeLayout.LayoutParams verticalFull = new RelativeLayout.LayoutParams(
+                    windowWidth, windowHeight);//tv版不变；
+            RelativeLayout.LayoutParams normalSize = new RelativeLayout.LayoutParams(
+                    width, height);//原player尺寸；
+            player.setLayoutParams(isFullScreen ? normalSize : isTV ? verticalFull : horizontalFull);
+        } else if (parent instanceof LinearLayout) {
+            LinearLayout.LayoutParams horizontalFull = new LinearLayout.LayoutParams(
+                    windowHeight, windowWidth);//phone版横屏；
+            LinearLayout.LayoutParams verticalFull = new LinearLayout.LayoutParams(
+                    windowWidth, windowHeight);//tv版不变；
+            LinearLayout.LayoutParams normalSize = new LinearLayout.LayoutParams(
+                    width, height);//原player尺寸；
+            player.setLayoutParams(isFullScreen ? normalSize : isTV ? verticalFull : horizontalFull);
+        } else if (parent instanceof ListView) {
+            ListView.LayoutParams horizontalFull = new ListView.LayoutParams(
+                    windowHeight, windowWidth);//phone版横屏；
+            ListView.LayoutParams verticalFull = new ListView.LayoutParams(
+                    windowWidth, windowHeight);//tv版不变；
+            ListView.LayoutParams normalSize = new ListView.LayoutParams(
+                    width, height);//原player尺寸；
+            player.setLayoutParams(isFullScreen ? normalSize : isTV ? verticalFull : horizontalFull);
+        } else if (parent instanceof RecyclerView) {
+            RecyclerView.LayoutParams horizontalFull = new RecyclerView.LayoutParams(
+                    windowHeight, windowWidth);//phone版横屏；
+            RecyclerView.LayoutParams verticalFull = new RecyclerView.LayoutParams(
+                    windowWidth, windowHeight);//tv版不变；
+            RecyclerView.LayoutParams normalSize = new RecyclerView.LayoutParams(
+                    width, height);//原player尺寸；
+            player.setLayoutParams(isFullScreen ? normalSize : isTV ? verticalFull : horizontalFull);
+        }
         if (!isFullScreen) {
             activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);//强制为动态横屏
