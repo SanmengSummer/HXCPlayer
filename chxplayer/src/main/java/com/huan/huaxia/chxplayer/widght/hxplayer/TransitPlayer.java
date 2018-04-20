@@ -2,7 +2,6 @@ package com.huan.huaxia.chxplayer.widght.hxplayer;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
@@ -18,8 +17,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.huan.huaxia.chxplayer.R;
-import com.huan.huaxia.chxplayer.player.services.DownLoadService;
-import com.huan.huaxia.chxplayer.widght.model.FileInfo;
 import com.huan.huaxia.chxplayer.widght.utils.Param;
 import com.huan.huaxia.chxplayer.widght.utils.PlayerUtils;
 import com.huan.huaxia.chxplayer.widght.utils.StringUtils;
@@ -29,6 +26,7 @@ import com.huan.huaxia.chxplayer.widght.listener.OnProgressBarListener;
 import com.huan.huaxia.chxplayer.widght.listener.OnVideoScreenMoveListener;
 import com.huan.huaxia.chxplayer.widght.model.MediaModel;
 import com.huan.huaxia.chxplayer.widght.event.PlayEvent;
+import com.huan.huaxia.chxplayer.widght.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -42,7 +40,7 @@ import static com.huan.huaxia.chxplayer.widght.utils.AnimalUtils.setAlphaAnimato
  * phonePlayer过渡的player（处理些混乱的逻辑）
  * Created by huaxia on 2017/11/9.
  */
-public class TransitPlayer extends SimplePlayer implements OnControllerListener {
+public class TransitPlayer extends SimplePlayer implements OnControllerListener, SimplePlayer.PointListener {
     private static final int UPDATE_PLAYTIME = 10;
     private static final int HIDE_PLAYER = 20;
     protected PlayerController controller;
@@ -60,6 +58,7 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener 
     protected LinearLayout mLlLuminance;
     protected ProgressBar mPbVolume;
     protected TextView mTvScreenLuminance;
+    protected TextView mName;
     private String duration;
     private String position;
     private int ijkPlayerDuration;
@@ -98,7 +97,7 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener 
         if (null != event) {
             this.index = event.index;
             stopPlayback();
-            setVideoPath(mPlayList.get(index).videoPath);
+            super.setVideoPath(mPlayList.get(index).videoPath);
             seekTo(event.duration);
             if (event.isPlaying) start();
             else pause();
@@ -118,22 +117,20 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener 
      * @param playList               播放列表
      * @param isSkipFullScreenPlayer 是否是简单全屏
      */
+
     public void setVideoList(ArrayList<MediaModel> playList, boolean isSkipFullScreenPlayer) {
-        mPlayList = playList;
-        setVideoPath(mPlayList.get(index).videoPath);
+        super.setVideoList(playList);
         this.isSkipFullScreenPlayer = isSkipFullScreenPlayer;
         initThisView();
     }
 
     @Override
-    public void setVideoPath(String path) {
-        super.setVideoPath(path);
-//        Intent intent = new Intent(mContext, DownLoadService.class);
-////        intent.setAction(DownLoadService.ACTION_START);
-//        FileInfo fileInfo = new FileInfo();
-//        fileInfo.setUrl(mPlayList.get(index).getVideoPath());
-//        intent.putExtra(Param.Constants.fileInfo, fileInfo);
-//        mContext.startService(intent);
+    public void onPointListener() {
+        setAlphaAnimator(mIvPlay, 0, 1);
+        setPlayerImageVisibility(VISIBLE);
+        mIvPlay.setImageResource(R.drawable.restart_selector);
+        mIvPlayPause.setImageResource(R.drawable.restart_selector);
+        ToastUtil.getInstance(mContext).Long("没有搜索有效的视频源，请重试").show();
     }
 
     private void addView() {
@@ -153,6 +150,7 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener 
         mRecyclerView = controller.mRecyclerView;
         mRl = controller.mRl;
         mIbBack = controller.mIbBack;
+        mName = controller.mName;
         mIvList = controller.mIvList;
         mIvPlayPause = controller.mIvPlayPause;
         mSbProgress = controller.mSbProgress;
@@ -164,6 +162,7 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener 
         mLlLuminance = controller.mLlLuminance;
         mPbVolume = controller.mPbVolume;
         mTvScreenLuminance = controller.mTvScreenLuminance;
+        onPointListener(this);
     }
 
     private void initThisView() {
@@ -237,6 +236,9 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener 
     @Override
     public void start() {
         super.start();
+        if (null != mPlayList) {
+            mName.setText(mPlayList.get(index).name);
+        }
         mHandler.sendEmptyMessage(UPDATE_PLAYTIME);
         mIvPlay.setImageResource(R.drawable.play_selector);
         mIvPlayPause.setImageResource(R.drawable.play_selector);
@@ -257,7 +259,17 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener 
     @Override
     public void controllerPlayPause() {
         setCountTimeThreadReset();
-        playPause();
+        if (!playError && showPoint) {
+            playPause();
+        } else {
+            playError = false;
+            if (null != loading)
+                loading.setVisibility(View.VISIBLE);
+            if (null != mPlayList) {
+                super.setVideoPath(mPlayList.get(index).videoPath);
+                start();
+            }
+        }
     }
 
     @Override
@@ -288,7 +300,7 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener 
     }
 
     public void showZoom() {
-        PlayerUtils.skipFullScreenPlayer((Activity) mContext, getParent(), this, isSkipFullScreenPlayer, isFullScreen, isTV, width, height, mPlayList, index, getCurrentPosition(), isPlaying());
+        PlayerUtils.skipFullScreenPlayer((Activity) mContext, this, isSkipFullScreenPlayer, isFullScreen, isTV, width, height, mPlayList, index, getCurrentPosition(), isPlaying());
         if (!isSkipFullScreenPlayer) setFullScreen(!isFullScreen);
 
     }

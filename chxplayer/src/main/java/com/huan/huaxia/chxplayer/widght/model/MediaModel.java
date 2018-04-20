@@ -10,7 +10,6 @@ import android.os.Parcelable;
  */
 
 public class MediaModel implements Parcelable {
-    public int id;
     public String name;
     public String videoPath;
     public String imagPath;
@@ -19,7 +18,6 @@ public class MediaModel implements Parcelable {
     }
 
     protected MediaModel(Parcel in) {
-        id = in.readInt();
         name = in.readString();
         videoPath = in.readString();
         imagPath = in.readString();
@@ -36,14 +34,6 @@ public class MediaModel implements Parcelable {
             return new MediaModel[size];
         }
     };
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -76,7 +66,6 @@ public class MediaModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
         parcel.writeString(name);
         parcel.writeString(videoPath);
         parcel.writeString(imagPath);
@@ -85,7 +74,6 @@ public class MediaModel implements Parcelable {
     @Override
     public String toString() {
         return "MediaModel{" +
-                "id=" + id +
                 ", name='" + name + '\'' +
                 ", videoPath='" + videoPath + '\'' +
                 ", imagPath='" + imagPath + '\'' +

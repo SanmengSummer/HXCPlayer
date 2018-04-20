@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.huan.huaxia.chxplayer.R;
 import com.huan.huaxia.chxplayer.player.media.BasePlayer;
 import com.huan.huaxia.chxplayer.widght.utils.DialogUtil;
@@ -35,8 +38,15 @@ public class SimplePlayer extends BasePlayer {
     protected AudioManager audioManager;
     protected Context mContext;
     protected int index;
-    private ViewGroup loading;
+    protected ViewGroup loading;
     private MyListener myListener;
+    protected ImageView playerImage;
+    private boolean showDialog;
+    protected boolean showPoint;
+    protected boolean playError;
+    private boolean hidePlayerImage;
+    private boolean hideLoading;
+    private boolean firstShow;
 
     public SimplePlayer(Context context) {
         super(context);
@@ -52,6 +62,7 @@ public class SimplePlayer extends BasePlayer {
         super(context, attrs, defStyleAttr);
         init(context);
     }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -60,13 +71,18 @@ public class SimplePlayer extends BasePlayer {
             height = getMeasuredHeight();
         }
     }
+
     private void init(Context context) {
         mContext = context;
         setBackgroundColor(getResources().getColor(R.color.light_black));
         audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         setFocusable(true);
-        loading = (ViewGroup) LayoutInflater.from(mContext).inflate(R.layout.tv_player_layout_loading, (ViewGroup) getRootView(), false);
+        if (!hidePlayerImage)
+            playerImage = (ImageView) LayoutInflater.from(mContext).inflate(R.layout.tv_player_image, (ViewGroup) getRootView(), false);
+        if (!hideLoading)
+            loading = (ViewGroup) LayoutInflater.from(mContext).inflate(R.layout.tv_player_layout_loading, (ViewGroup) getRootView(), false);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        this.addView(playerImage, params);
         this.addView(loading, params);
     }
 
@@ -75,25 +91,26 @@ public class SimplePlayer extends BasePlayer {
      */
     public void setVideoList(ArrayList<MediaModel> playList) {
         mPlayList = playList;
-        setVideoPath(mPlayList.get(index).videoPath);
-        initView();
+        if (null != mPlayList)
+            setVideoPath(mPlayList.get(index).videoPath);
     }
 
     @Override
     public void setVideoPath(String path) {
+        if (null == mPlayList) {
+            MediaModel mediaModel = new MediaModel();
+            mediaModel.setVideoPath(path);
+            mediaModel.setName("No name");
+            mPlayList.add(mediaModel);
+        }
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libmIjkplayer.so");
         setListener();
+        Glide.with(mContext).load(mPlayList.get(index).getImagPath()).placeholder(R.mipmap.icon_empty).into(playerImage);
         super.setVideoPath(path);
+        firstShow = true;
     }
 
-    public void initView() {
-        if (null != mPlayList) {
-            IjkMediaPlayer.loadLibrariesOnce(null);
-            IjkMediaPlayer.native_profileBegin("libmIjkplayer.so");
-            setListener();
-        }
-    }
 
     private void setListener() {
         myListener = new MyListener();
@@ -140,7 +157,16 @@ public class SimplePlayer extends BasePlayer {
 
     @Override
     public void start() {
+        playerImage.setVisibility(GONE);
         super.start();
+    }
+
+    public void setLoadingVisibility(int visibility) {
+        loading.setVisibility(visibility);
+    }
+
+    public void setPlayerImageVisibility(int visibility) {
+        playerImage.setVisibility(visibility);
     }
 
     //设置监听
@@ -149,18 +175,18 @@ public class SimplePlayer extends BasePlayer {
         IMediaPlayer.OnCompletionListener iMediaPlayerCompletionListener = new IMediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(IMediaPlayer iMediaPlayer) {
-                loading.setVisibility(View.GONE);
+                setLoadingVisibility(GONE);
+                if (isFullScreen && index == mPlayList.size()) ((Activity) mContext).finish();
                 playNext();
-                if (index == mPlayList.size()) ((Activity) mContext).finish();
             }
         };
         //播放错误调用
         IMediaPlayer.OnErrorListener iMediaPlayerOnErrorListener = new IMediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
-                loading.setVisibility(View.GONE);
-                if (!isPlaying())
-                    DialogUtil.showUnSubscribeDialog(mContext, isTV, isFullScreen);
+                playError = true;
+                setLoadingVisibility(GONE);
+                setDialogOrPoint();
                 return true;
             }
         };
@@ -168,7 +194,8 @@ public class SimplePlayer extends BasePlayer {
         IMediaPlayer.OnPreparedListener onPreparedListener = new IMediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(IMediaPlayer iMediaPlayer) {
-                loading.setVisibility(View.GONE);
+                setLoadingVisibility(GONE);
+                firstShow = false;
             }
         };
         //播放缓冲
@@ -176,9 +203,10 @@ public class SimplePlayer extends BasePlayer {
             @Override
             public boolean onInfo(IMediaPlayer iMediaPlayer, int i, int i1) {
                 if (i == IMediaPlayer.MEDIA_INFO_BUFFERING_START) {
-                    loading.setVisibility(View.VISIBLE);
+                    if (!firstShow)
+                        setLoadingVisibility(VISIBLE);
                 } else if (i == IMediaPlayer.MEDIA_INFO_BUFFERING_END) {
-                    loading.setVisibility(View.GONE);
+                    setLoadingVisibility(GONE);
                 }
                 return true;
             }
@@ -186,13 +214,64 @@ public class SimplePlayer extends BasePlayer {
         DialogUtil.OnReLoadingListener onReLoadingListener = new DialogUtil.OnReLoadingListener() {
             @Override
             public void reLoading() {
-                loading.setVisibility(View.VISIBLE);
+                playError = false;
+                setLoadingVisibility(VISIBLE);
                 if (null != mPlayList) {
                     setVideoPath(mPlayList.get(index).videoPath);
                     start();
                 }
             }
         };
+    }
+
+    //设置一个播放错误提示dialog
+    private void setDialogOrPoint() {
+        if (!isPlaying() && showDialog)
+            DialogUtil.showUnSubscribeDialog(mContext, isTV, isFullScreen);
+        else if (!isPlaying() && showPoint) {
+            if (null != mListener)
+                mListener.onPointListener();
+        }
+    }
+
+    private PointListener mListener;
+
+    public void onPointListener(PointListener listener) {
+        mListener = listener;
+    }
+
+    interface PointListener {
+        void onPointListener();
+    }
+
+    //设置是否展示播放错误Point
+    public void setShowPoint(boolean showPoint) {
+        this.showPoint = showPoint;
+    }
+
+    //设置是否展示播放错误dialog或Point之一
+    public void setShowDialogOrPoint(boolean showDialogOrPoint) {
+        this.showDialog = showDialogOrPoint;
+        this.showPoint = !showDialogOrPoint;
+    }
+
+    //设置是否展示loading
+    public void setLoadingNone() {
+        hideLoading = true;
+        removeView(loading);
+        loading = null;
+    }
+
+    //设置是否展示playerImage(播放前图片)
+    public void setImageNone() {
+        hidePlayerImage = true;
+        removeView(loading);
+        loading = null;
+    }
+
+    //设置是否展示播放错误dialog
+    public void setShowDialog(boolean showDialog) {
+        this.showDialog = showDialog;
     }
 
     @Override

@@ -12,16 +12,6 @@
 
     <application>
         <activity
-            android:name=".DemoTestActivity"
-            android:configChanges="screenSize|keyboardHidden|orientation"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".widght.hxplayer.FullScreenPlayer"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
@@ -30,10 +20,6 @@
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
-        <service
-            android:name=".player.services.DownLoadService"
-            android:enabled="true"
-            android:exported="true"></service>
     </application>
 
 </manifest>

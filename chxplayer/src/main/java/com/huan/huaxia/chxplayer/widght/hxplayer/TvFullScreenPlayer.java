@@ -100,7 +100,6 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
         controller = (PlayerController) findViewById(R.id.controller);
         controller.findViewById(R.id.iv_back).setVisibility(View.VISIBLE);
         controller.setOnPlayListItemListener(this);
-//        controller.setOnProgressBarListener(this);
         controller.setControllerListener(this);
         controller.showController();
         if (null != playList) {
@@ -158,10 +157,6 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
 
     //////////////////////////////////////
 
-    /*
-     *controller的监听
-     */
-
     /**
      * playList的监听
      */
@@ -174,21 +169,6 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
     public void setOnClickListener(View view, int index) {
         player.index = index;
     }
-
-//    /**
-//     * Progressbar的监听（progressbar变化，开始碰触，停止碰触）（对tv版progress焦点选中后的变化不能监听）
-//     */
-//    @Override
-//    public void onProgressChanged(SeekBar seekBar, int percent, boolean b) {
-//    }
-//
-//    @Override
-//    public void onStartTrackingTouch(SeekBar seekBar) {
-//    }
-//
-//    @Override
-//    public void onStopTrackingTouch(SeekBar seekBar) {
-//    }
 
     /**
      * controller整体的监听（播放暂停，播放列表，放大缩小，返回）

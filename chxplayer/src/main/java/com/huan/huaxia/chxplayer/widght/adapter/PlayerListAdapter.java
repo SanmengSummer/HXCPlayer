@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.huan.huaxia.chxplayer.R;
 import com.huan.huaxia.chxplayer.player.media.BasePlayer;
+import com.huan.huaxia.chxplayer.widght.hxplayer.SimplePlayer;
 import com.huan.huaxia.chxplayer.widght.model.MediaModel;
 
 import java.util.ArrayList;
@@ -24,11 +25,11 @@ import static com.huan.huaxia.chxplayer.widght.utils.AnimalUtils.setScaleAnimato
 
 public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.MyViewHolder> {
     private int index;
-    private BasePlayer mPlayerView;
+    private SimplePlayer mPlayerView;
     private ArrayList<MediaModel> mPlayList;
     private Context mContext;
 
-    public PlayerListAdapter(Context mContext, BasePlayer basePlayer, ArrayList<MediaModel> mPlayList, int index) {
+    public PlayerListAdapter(Context mContext, SimplePlayer basePlayer, ArrayList<MediaModel> mPlayList, int index) {
         this.mContext = mContext;
         this.index = index;
         mPlayerView = basePlayer;
@@ -79,7 +80,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.My
         return (null == mPlayList) ? 0 : mPlayList.size();
     }
 
-    public void setData(BasePlayer basePlayer, ArrayList<MediaModel> mPlayList, int index) {
+    public void setData(SimplePlayer basePlayer, ArrayList<MediaModel> mPlayList, int index) {
         this.index = index;
         mPlayerView = basePlayer;
         this.mPlayList = mPlayList;

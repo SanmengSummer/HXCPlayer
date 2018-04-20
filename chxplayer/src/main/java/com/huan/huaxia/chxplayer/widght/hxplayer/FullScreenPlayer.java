@@ -72,18 +72,18 @@ public class FullScreenPlayer extends AppCompatActivity {
         playEvent = new PlayEvent();
         player = (PhonePlayer) findViewById(R.id.player);
         player.findViewById(R.id.iv_back).setVisibility(View.VISIBLE);
-        player.isSkipFullScreenPlayer = true;
         player.index = index;
         player.isTV=false;
         player.setFullScreen(true);
         player.hide();
         if (null != playList && playList.size() > 0) {
-            player.setVideoList(playList, false);
+            player.setVideoList(playList, true);
         }
         else if (!TextUtils.isEmpty(path)) {
             player.setVideoPath(path);
         }
         else return;
+        player.isSkipFullScreenPlayer = true;
         player.seekTo(mDuration);
         if (isPlaying) player.start();
         else player.pause();

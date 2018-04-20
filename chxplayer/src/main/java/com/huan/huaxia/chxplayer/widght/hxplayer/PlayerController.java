@@ -49,6 +49,7 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     protected LinearLayout mLlLuminance;
     protected ProgressBar mPbVolume;
     protected TextView mTvScreenLuminance;
+    protected TextView mName;
     private Context mContext;
     private PlayerListAdapter mPlayListAdapter;
     private OnPlayListItemListener mOnPlayListItemListener;
@@ -80,7 +81,7 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     private void initView() {
         controller = (ViewGroup) LayoutInflater.from(mContext).inflate(isTvValue ? R.layout.contraller_layout : R.layout.contraller_layout_phone, (ViewGroup) getRootView(), false);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         addView(controller, params);
         findViewById();
     }
@@ -88,7 +89,6 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     private void init(AttributeSet attrs) {
         TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.test);
         isTvValue = ta.getBoolean(R.styleable.test_isTv, true);
-        Log.e("chen", isTvValue + "");
         ta.recycle();
     }
 
@@ -96,6 +96,7 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
         mRl = (RelativeLayout) findViewById(R.id.rl);
         mRecyclerView = (RecyclerView) findViewById(R.id.rclv);
         mIbBack = (ImageView) findViewById(R.id.iv_back);
+        mName = (TextView) findViewById(R.id.iv_name);
         mIvList = (ImageView) findViewById(R.id.iv_list);
         mIvPlay = (ImageView) findViewById(R.id.iv_play);
         mIvZoom = (ImageView) findViewById(R.id.iv_zoom);
@@ -122,11 +123,11 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     /**
      * 展示player的列表
      *
-     * @param basePlayer 当前的player（基于basePlayer）
+     * @param basePlayer 当前的player（基于SimplePlayer）
      * @param mPlayList  播放列表（MediaModel）
      * @param index      当前视频的index
      */
-    private void showPlayerList(BasePlayer basePlayer, ArrayList<MediaModel> mPlayList, int index) {
+    private void showPlayerList(SimplePlayer basePlayer, ArrayList<MediaModel> mPlayList, int index) {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         mPlayListAdapter = new PlayerListAdapter(mContext, basePlayer, mPlayList, index);
         mRecyclerView.setAdapter(mPlayListAdapter);
@@ -134,7 +135,7 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     }
 
 
-    public void showListData(BasePlayer basePlayer, ArrayList<MediaModel> mPlayList, int index) {
+    public void showListData(SimplePlayer basePlayer, ArrayList<MediaModel> mPlayList, int index) {
         mPlayListAdapter.setData(basePlayer, mPlayList, index);
     }
 

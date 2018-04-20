@@ -1,7 +1,7 @@
-package com.huan.huaxia.chxplayer;
+package huaxia.demo;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
@@ -65,7 +65,6 @@ public class DemoTestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_demo_test);
         mPlayerView = (PhonePlayer) findViewById(R.id.player_video);
         mPlayerView2 = (TvPlayer) findViewById(R.id.player_video2);
-        mPlayerView2.setVisibility(View.GONE);
         Button btn = (Button) findViewById(R.id.btn);
         Button btn2 = (Button) findViewById(R.id.btn2);
         mPlayerView.setVideoList(playList, false);
