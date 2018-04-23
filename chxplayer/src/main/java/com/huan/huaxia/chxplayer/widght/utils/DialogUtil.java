@@ -19,8 +19,8 @@ public class DialogUtil {
         final Dialog dialog = new Dialog(mContext, R.style.common_dialog);
         dialog.setContentView(view);
 
-        Button exit = view.findViewById(R.id.btn_exit);
-        Button loading = view.findViewById(R.id.btn_re_loading);
+        Button exit = (Button) view.findViewById(R.id.btn_exit);
+        Button loading = (Button) view.findViewById(R.id.btn_re_loading);
         focusChangeListenerHepler(loading, mContext);
         focusChangeListenerHepler(exit, mContext);
         loading.setOnClickListener(new View.OnClickListener() {

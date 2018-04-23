@@ -94,8 +94,8 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.My
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.iv);
-            text = itemView.findViewById(R.id.tv);
+            image = (ImageView) itemView.findViewById(R.id.iv);
+            text = (TextView) itemView.findViewById(R.id.tv);
         }
     }
 
