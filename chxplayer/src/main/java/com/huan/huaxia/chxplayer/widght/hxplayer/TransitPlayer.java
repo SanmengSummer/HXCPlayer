@@ -1,12 +1,12 @@
 package com.huan.huaxia.chxplayer.widght.hxplayer;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,20 +17,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.huan.huaxia.chxplayer.R;
+import com.huan.huaxia.chxplayer.widght.adapter.PlayerListAdapter;
 import com.huan.huaxia.chxplayer.widght.utils.Param;
-import com.huan.huaxia.chxplayer.widght.utils.PlayerUtils;
 import com.huan.huaxia.chxplayer.widght.utils.StringUtils;
 import com.huan.huaxia.chxplayer.widght.listener.OnControllerListener;
 import com.huan.huaxia.chxplayer.widght.listener.OnPlayListItemListener;
 import com.huan.huaxia.chxplayer.widght.listener.OnProgressBarListener;
 import com.huan.huaxia.chxplayer.widght.listener.OnVideoScreenMoveListener;
 import com.huan.huaxia.chxplayer.widght.model.MediaModel;
-import com.huan.huaxia.chxplayer.widght.event.PlayEvent;
 import com.huan.huaxia.chxplayer.widght.utils.ToastUtil;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -53,6 +48,8 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
     protected ImageView mIvPlay;
     protected ImageView mIvList;
     protected ImageView mIvZoom;
+    protected ImageView mIvVolume;
+    protected ImageView mIvScreenLuminance;
     protected RecyclerView mRecyclerView;
     protected LinearLayout mLlVolume;
     protected LinearLayout mLlLuminance;
@@ -76,6 +73,7 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
             }
         }
     };
+    private PlayerListAdapter mPlayListAdapter;
 
     public TransitPlayer(Context context) {
         super(context);
@@ -92,35 +90,11 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
         addView();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
-    public void onSynPlayerInfo(PlayEvent event) {
-        if (null != event) {
-            this.index = event.index;
-            stopPlayback();
-            super.setVideoPath(mPlayList.get(index).videoPath);
-            seekTo(event.duration);
-            if (event.isPlaying) start();
-            else pause();
-        }
-    }
-
     /**
-     * 传入播放源1
+     * @param playList 播放列表
      */
     public void setVideoList(ArrayList<MediaModel> playList) {
-        setVideoList(playList, false);
-    }
-
-    /**
-     * 传入播放源2
-     *
-     * @param playList               播放列表
-     * @param isSkipFullScreenPlayer 是否是简单全屏
-     */
-
-    public void setVideoList(ArrayList<MediaModel> playList, boolean isSkipFullScreenPlayer) {
         super.setVideoList(playList);
-        this.isSkipFullScreenPlayer = isSkipFullScreenPlayer;
         initThisView();
     }
 
@@ -134,7 +108,6 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
     }
 
     private void addView() {
-        EventBus.getDefault().register(this);
         addController();
         setControllerListener();
         hide();
@@ -151,19 +124,29 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
         mRl = controller.mRl;
         mIbBack = controller.mIbBack;
         mName = controller.mName;
-        mIvList = controller.mIvList;
         mIvPlayPause = controller.mIvPlayPause;
         mSbProgress = controller.mSbProgress;
         mTvMusicTime = controller.mTvMusicTime;
         mTvMoveTime = controller.mTvMoveTime;
+        mIvList = controller.mIvList;
         mIvPlay = controller.mIvPlay;
         mIvZoom = controller.mIvZoom;
+        mIvVolume = controller.mIvVolume;
+        mIvScreenLuminance = controller.mIvScreenLuminance;
         mLlVolume = controller.mLlVolume;
         mLlLuminance = controller.mLlLuminance;
         mPbVolume = controller.mPbVolume;
         mTvScreenLuminance = controller.mTvScreenLuminance;
+        mPlayListAdapter = controller.mPlayListAdapter;
         onPointListener(this);
     }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        changeControllerSize();
+    }
+
 
     private void initThisView() {
         if (null != mPlayList) {
@@ -176,19 +159,17 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
     //设置一系列监听
     private void setControllerListener() {
         controller.setControllerListener(this);
-        if (null != mPlayList)
-            controller.setOnPlayListItemListener(new OnPlayListItemListener() {
-                @Override
-                public void setOnFocusChangeListener(View view, boolean b) {
-                    // 播放列表各条目焦点变化回调
-                }
+        controller.setOnPlayListItemListener(new OnPlayListItemListener() {
+            @Override
+            public void setOnFocusChangeListener(View view, boolean b) {
+                // 播放列表各条目焦点变化回调
+            }
 
-                @Override
-                public void setOnClickListener(View view, int mIndex) {
-                    index = mIndex;
-                    // 播放列表各条目点击回调
-                }
-            });
+            @Override
+            public void setOnClickListener(View view, int mIndex) {
+                // 播放列表各条目点击回调
+            }
+        });
 
         controller.setOnProgressBarListener(new OnProgressBarListener() {
             private int percent;
@@ -253,22 +234,21 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
         super.releaseWithoutStop();
         countTimeThread = null;
         mHandler.removeCallbacksAndMessages(null);
-        EventBus.getDefault().unregister(this);//解除订阅
     }
 
     @Override
     public void controllerPlayPause() {
         setCountTimeThreadReset();
-        if (!playError && showPoint) {
-            playPause();
-        } else {
+        if (playError && showPoint) {
             playError = false;
             if (null != loading)
                 loading.setVisibility(View.VISIBLE);
             if (null != mPlayList) {
-                super.setVideoPath(mPlayList.get(index).videoPath);
+                setVideoPath(mPlayList.get(index).videoPath);
                 start();
             }
+        } else {
+            playPause();
         }
     }
 
@@ -281,12 +261,16 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
 
     @Override
     public void controllerZoom() {
-        showZoom();
+        if (null != mListener)
+            mListener.setOnExitListener();
+        showZoom(isChangePlayerSize);
     }
 
     @Override
     public void controllerBack() {
-        showZoom();
+        if (null != mListener)
+            mListener.setOnExitListener();
+        showZoom(isChangePlayerSize);
     }
 
     @Override
@@ -299,10 +283,10 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
         //phone版无用
     }
 
-    public void showZoom() {
-        PlayerUtils.skipFullScreenPlayer((Activity) mContext, this, isSkipFullScreenPlayer, isFullScreen, isTV, width, height, mPlayList, index, getCurrentPosition(), isPlaying());
-        if (!isSkipFullScreenPlayer) setFullScreen(!isFullScreen);
-
+    @Override
+    public void showZoom(boolean isChangePlayerSize) {
+        super.showZoom(isChangePlayerSize);
+        if (isChangePlayerSize) setFullScreen(!isFullScreen);
     }
 
     protected OnVideoScreenMoveListener mOnVideoScreenMoveListener;
@@ -348,7 +332,6 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
         controller.hideController();
     }
 
-
     private class CountTimeThread extends Thread {
         private final long maxVisibleTime;
 
@@ -390,7 +373,6 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
             }
         }
     }
-
 ///////////////////////////////////////////////////////////////////////////////////////
 
     public void setFullScreen(boolean isFullScreen) {
@@ -398,4 +380,90 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
         mIvZoom.setImageResource(isFullScreen ? R.mipmap.shrink : R.mipmap.enlarge);
         this.isFullScreen = isFullScreen;
     }
+
+    private ExitListener mListener;
+
+    public void setOnExitListener(ExitListener listener) {
+        mListener = listener;
+    }
+
+    interface ExitListener {
+        void setOnExitListener();
+    }
+
+    //动态改变Controller里控件的Size
+    private void changeControllerSize() {
+        if (!isFullScreen) {
+            mRecyclerView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+            final int tempSize35 = 35 * height / 1080;
+            int tempSize40 = 40 * height / 1080;
+            int tempSize45 = 45 * height / 1080;
+            int tempSize50 = 50 * height / 1080;
+            final int tempSize70 = 70 * height / 1080;
+            final int tempSize160 = 160 * height / 1080;
+            final int tempSize10 = 10 * height / 1080 == 0 ? 1 : 10 * height / 1080;
+            int tempSize5 = 5 * height / 1080 == 0 ? 1 : 5 * height / 1080;
+
+            RelativeLayout.LayoutParams layoutParamsWRAPR = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams layoutParamsWRAP = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams layoutParams40 = new LinearLayout.LayoutParams(tempSize40, tempSize40);
+            LinearLayout.LayoutParams layoutParams45 = new LinearLayout.LayoutParams(tempSize45, tempSize45);
+            RelativeLayout.LayoutParams layoutParams160 = new RelativeLayout.LayoutParams(tempSize160, tempSize160);
+            RelativeLayout.LayoutParams layoutParams70 = new RelativeLayout.LayoutParams(tempSize70, tempSize70);
+            LinearLayout.LayoutParams layoutParams50 = new LinearLayout.LayoutParams(tempSize50, tempSize50);
+            LinearLayout.LayoutParams layoutParams10_160 = new LinearLayout.LayoutParams(tempSize10, tempSize160);
+            LinearLayout.LayoutParams layoutParamsSbProgress = new LinearLayout.LayoutParams(width - tempSize160, 5);
+            layoutParams40.setMargins(tempSize5, tempSize5, tempSize5, tempSize5);
+            layoutParams45.setMargins(tempSize5, tempSize5, tempSize5, tempSize5);
+            layoutParams160.addRule(RelativeLayout.CENTER_IN_PARENT);
+            layoutParamsWRAP.setMargins(tempSize10, tempSize10, tempSize10, tempSize10);
+            layoutParamsWRAPR.setMargins(tempSize50, 0, 0, 0);
+            layoutParamsWRAPR.addRule(RelativeLayout.CENTER_VERTICAL);
+
+            mIvPlay.setLayoutParams(layoutParams160);
+            mIbBack.setLayoutParams(layoutParams45);
+            mIvList.setLayoutParams(layoutParams45);
+            mIvZoom.setLayoutParams(layoutParams45);
+            mIvPlayPause.setLayoutParams(layoutParams70);
+            mIvVolume.setLayoutParams(layoutParams40);
+            mIvScreenLuminance.setLayoutParams(layoutParams50);
+            mPbVolume.setLayoutParams(layoutParams10_160);
+
+            mLlVolume.setPadding(tempSize5, tempSize5, tempSize5, tempSize5);
+            mLlVolume.setLayoutParams(layoutParamsWRAPR);
+
+            mLlLuminance.setPadding(0, 0, tempSize50, 0);
+
+            mSbProgress.setLayoutParams(layoutParamsSbProgress);
+            mSbProgress.setThumb(mContext.getResources().getDrawable(R.mipmap.audio_seek_thumb2));
+            mSbProgress.setPadding(2, 1, 2, 1);
+
+            mName.setLayoutParams(layoutParamsWRAP);
+            mName.setTextSize(tempSize35);
+
+            mTvMusicTime.setTextSize(tempSize35);
+            mTvMoveTime.setTextSize(tempSize35);
+            mTvScreenLuminance.setTextSize(tempSize35);
+            mPlayListAdapter.setChangeSizeListener(new PlayerListAdapter.ChangeSizeListener() {
+                @Override
+                public void setChangeTextSizeListener(TextView view) {
+                    view.setTextSize(tempSize35);
+                }
+
+                @Override
+                public void setChangeImageSizeListener(ImageView view) {
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(tempSize70, tempSize160);
+                    view.setLayoutParams(layoutParams);
+                }
+
+                @Override
+                public void setChangeItemViewSizeListener(LinearLayout view) {
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.setMargins(2, 2, 2, 2);
+                    view.setLayoutParams(layoutParams);
+                }
+            });
+        }
+    }
+
 }

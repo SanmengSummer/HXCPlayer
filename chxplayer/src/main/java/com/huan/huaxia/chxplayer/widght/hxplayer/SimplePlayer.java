@@ -1,12 +1,15 @@
 package com.huan.huaxia.chxplayer.widght.hxplayer;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -14,6 +17,8 @@ import com.bumptech.glide.Glide;
 import com.huan.huaxia.chxplayer.R;
 import com.huan.huaxia.chxplayer.player.media.BasePlayer;
 import com.huan.huaxia.chxplayer.widght.utils.DialogUtil;
+import com.huan.huaxia.chxplayer.widght.utils.Param;
+import com.huan.huaxia.chxplayer.widght.utils.PlayerUtils;
 import com.huan.huaxia.chxplayer.widght.utils.ToastUtil;
 import com.huan.huaxia.chxplayer.widght.model.MediaModel;
 
@@ -24,6 +29,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 
 /**
+ * 简单Player
  * Created by huaxia on 2017/11/9.
  */
 
@@ -31,22 +37,23 @@ public class SimplePlayer extends BasePlayer {
     protected int height;
     protected int width;
     protected boolean isSbProgressChange;
-    protected boolean isSkipFullScreenPlayer;
+    protected boolean isChangePlayerSize;
     protected boolean isFullScreen;
     protected boolean isTV;//是否是TV端播放器，默认不是；
     protected ArrayList<MediaModel> mPlayList;
     protected AudioManager audioManager;
     protected Context mContext;
-    protected int index;
+    public int index;
     protected ViewGroup loading;
     private MyListener myListener;
     protected ImageView playerImage;
-    private boolean showDialog;
+    protected boolean showDialog;
     protected boolean showPoint;
     protected boolean playError;
     private boolean hidePlayerImage;
     private boolean hideLoading;
-    private boolean firstShow;
+    private boolean notFirstShow;
+    protected boolean showZoomPlayer;
 
     public SimplePlayer(Context context) {
         super(context);
@@ -84,10 +91,11 @@ public class SimplePlayer extends BasePlayer {
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.addView(playerImage, params);
         this.addView(loading, params);
+        setLoadingVisibility(GONE);
     }
 
     /**
-     * 传入播放源1
+     * 传入播放源
      */
     public void setVideoList(ArrayList<MediaModel> playList) {
         mPlayList = playList;
@@ -106,9 +114,9 @@ public class SimplePlayer extends BasePlayer {
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libmIjkplayer.so");
         setListener();
+        notFirstShow = false;
         Glide.with(mContext).load(mPlayList.get(index).getImagPath()).placeholder(R.mipmap.icon_empty).into(playerImage);
         super.setVideoPath(path);
-        firstShow = true;
     }
 
 
@@ -147,7 +155,44 @@ public class SimplePlayer extends BasePlayer {
     public void playPause() {
         if (isPlaying()) pause();
         else start();
+    }
 
+    /**
+     * 大小屏切换
+     */
+    public void showZoom(boolean isChangePlayerSize) {
+        if (!isFullScreen) {
+            showZoomPlayer = true;
+            registerReceiver();
+        }
+        PlayerUtils mInstance = PlayerUtils.getInstance();
+        Bundle outState = setBundle(isChangePlayerSize);
+        mInstance.saveState(outState);
+        mInstance.skipFullScreenPlayer((Activity) mContext, this);
+    }
+
+    /**
+     * 大小屏切换(默认isChangePlayerSize为false)
+     */
+    public void showZoom() {
+        showZoom(false);
+    }
+
+    @NonNull//参数的传递
+    private Bundle setBundle(boolean isChangePlayerSize) {
+        Bundle outState = new Bundle();
+        outState.putBoolean(Param.BundleParam.isChangePlayerSize, isChangePlayerSize);
+        outState.putBoolean(Param.BundleParam.showDialog, showDialog);
+        outState.putBoolean(Param.BundleParam.showPoint, showPoint);
+        outState.putBoolean(Param.BundleParam.isFullScreen, isFullScreen);
+        outState.putBoolean(Param.BundleParam.isTV, isTV);
+        outState.putBoolean(Param.BundleParam.isPlaying, isPlaying());
+        outState.putInt(Param.BundleParam.width, width);
+        outState.putInt(Param.BundleParam.height, height);
+        outState.putInt(Param.BundleParam.index, index);
+        outState.putInt(Param.BundleParam.currentPosition, getCurrentPosition());
+        outState.putParcelableArrayList(Param.BundleParam.mPlayList, mPlayList);
+        return outState;
     }
 
     @Override
@@ -195,7 +240,6 @@ public class SimplePlayer extends BasePlayer {
             @Override
             public void onPrepared(IMediaPlayer iMediaPlayer) {
                 setLoadingVisibility(GONE);
-                firstShow = false;
             }
         };
         //播放缓冲
@@ -203,9 +247,10 @@ public class SimplePlayer extends BasePlayer {
             @Override
             public boolean onInfo(IMediaPlayer iMediaPlayer, int i, int i1) {
                 if (i == IMediaPlayer.MEDIA_INFO_BUFFERING_START) {
-                    if (!firstShow)
+                    if (notFirstShow)
                         setLoadingVisibility(VISIBLE);
                 } else if (i == IMediaPlayer.MEDIA_INFO_BUFFERING_END) {
+                    notFirstShow = true;
                     setLoadingVisibility(GONE);
                 }
                 return true;
@@ -244,39 +289,85 @@ public class SimplePlayer extends BasePlayer {
         void onPointListener();
     }
 
-    //设置是否展示播放错误Point
+    //设置是否展示播放错误Point 默认为false
     public void setShowPoint(boolean showPoint) {
         this.showPoint = showPoint;
     }
 
-    //设置是否展示播放错误dialog或Point之一
+    //设置是否展示播放错误dialog或Point之一 （false为Point，true为dialog）
     public void setShowDialogOrPoint(boolean showDialogOrPoint) {
         this.showDialog = showDialogOrPoint;
         this.showPoint = !showDialogOrPoint;
     }
 
-    //设置是否展示loading
+    //设置是否展示loading 默认为false
     public void setLoadingNone() {
         hideLoading = true;
         removeView(loading);
         loading = null;
     }
 
-    //设置是否展示playerImage(播放前图片)
+    //设置是否展示playerImage(播放前图片)默认为false
     public void setImageNone() {
         hidePlayerImage = true;
         removeView(loading);
         loading = null;
     }
 
-    //设置是否展示播放错误dialog
+    //设置是否展示播放错误dialog默认为false
     public void setShowDialog(boolean showDialog) {
         this.showDialog = showDialog;
+    }
+
+    /**
+     * @param isChangePlayerSize 设置controller全屏方式
+     * （false为跳转到FullScreenPlayer或TVScreenPlayer，true则是改变player尺寸为全屏）
+     */
+    public void setIsChangePlayerSize(boolean isChangePlayerSize) {
+        this.isChangePlayerSize = isChangePlayerSize;
     }
 
     @Override
     public void releaseWithoutStop() {
         super.releaseWithoutStop();
         IjkMediaPlayer.native_profileEnd();
+        if (showZoomPlayer) {
+            unRegisterReceiver();
+        }
+        pause();
+    }
+
+    //发送全屏切小屏参数传递的广播
+    private BroadcastReceiver dynamicReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if ("com.huaxia.play".equals(action)) {
+                if (showZoomPlayer) {
+                    index = intent.getIntExtra(Param.Constants.index, 0);
+                    seekTo(intent.getIntExtra(Param.Constants.mDuration, 0));
+                    setVideoPath(mPlayList.get(index).videoPath);
+                    if (intent.getBooleanExtra(Param.Constants.isPlaying, false)) start();
+                    else pause();
+                }
+                showZoomPlayer = false;
+            }
+        }
+    };
+    private boolean isRegisterReceiver;
+
+    public void registerReceiver() {
+        if (!isRegisterReceiver && null != mContext) {
+            IntentFilter filter_dynamic = new IntentFilter();
+            filter_dynamic.addAction("com.huaxia.play");
+            mContext.registerReceiver(dynamicReceiver, filter_dynamic);
+        }
+    }
+
+    protected void unRegisterReceiver() {
+        if (isRegisterReceiver && null != mContext) {
+            isRegisterReceiver = false;
+            mContext.unregisterReceiver(dynamicReceiver);
+        }
     }
 }

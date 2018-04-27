@@ -20,8 +20,8 @@
         android:ellipsize="marquee"
         android:gravity="center"
         android:maxLines="1"
-        android:text="测试"
-        android:textColor="@android:color/darker_gray"
+        android:text="null"
+        android:textColor="@android:color/white"
         android:textSize="@dimen/x15" />
 
 </LinearLayout>

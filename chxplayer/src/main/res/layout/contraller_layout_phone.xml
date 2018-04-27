@@ -3,14 +3,13 @@
     android:id="@+id/rl"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/x20"
     android:background="@color/colorTransparent"
     android:focusable="true">
 
     <ImageView
         android:id="@+id/iv_play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/x140"
+        android:layout_height="@dimen/x140"
         android:layout_centerInParent="true"
         android:background="@drawable/image_selector"
         android:src="@drawable/pause_selector" />
@@ -27,13 +26,13 @@
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/x35"
+            android:layout_height="@dimen/x35"
             android:layout_margin="@dimen/x7"
             android:background="@drawable/image_selector"
             android:focusable="true"
             android:src="@mipmap/video_back"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/iv_name"
@@ -55,8 +54,8 @@
         <!---->
         <ImageView
             android:id="@+id/iv_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/x40"
+            android:layout_height="@dimen/x40"
             android:layout_gravity="right"
             android:layout_margin="@dimen/x7"
             android:background="@drawable/image_selector"
@@ -92,6 +91,7 @@
                 android:layout_width="@dimen/x60"
                 android:layout_height="@dimen/x60"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/image_selector"
                 android:focusable="true"
@@ -102,6 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:gravity="center"
                 android:text="@string/_00_00_00_00"
@@ -131,13 +132,15 @@
                 android:thumb="@mipmap/audio_seek_thumb" />
 
             <ImageView
+                android:padding="@dimen/x1"
                 android:id="@+id/iv_zoom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/x35"
+                android:layout_height="@dimen/x35"
                 android:layout_marginBottom="@dimen/x5"
                 android:layout_marginLeft="@dimen/x5"
+                android:layout_marginStart="@dimen/x5"
                 android:layout_marginTop="@dimen/x5"
-                android:background="@drawable/zoom_selector"
+                android:background="@drawable/image_selector"
                 android:focusable="true"
                 android:src="@mipmap/enlarge" />
         </LinearLayout>

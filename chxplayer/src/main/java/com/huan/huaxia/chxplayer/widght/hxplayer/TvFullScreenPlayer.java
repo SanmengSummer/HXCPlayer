@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,12 +15,10 @@ import android.view.WindowManager;
 import com.huan.huaxia.chxplayer.R;
 import com.huan.huaxia.chxplayer.widght.utils.Param;
 import com.huan.huaxia.chxplayer.widght.utils.StringUtils;
-import com.huan.huaxia.chxplayer.widght.event.PlayEvent;
 import com.huan.huaxia.chxplayer.widght.listener.OnControllerListener;
 import com.huan.huaxia.chxplayer.widght.listener.OnPlayListItemListener;
 import com.huan.huaxia.chxplayer.widght.model.MediaModel;
-
-import org.greenrobot.eventbus.EventBus;
+import com.huan.huaxia.chxplayer.widght.utils.ToastUtil;
 
 import java.util.ArrayList;
 
@@ -28,24 +27,23 @@ import static android.view.View.VISIBLE;
 import static com.huan.huaxia.chxplayer.widght.utils.AnimalUtils.setAlphaAnimator;
 
 /**
- *
+ * tv版全屏player
  */
-public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListItemListener, OnControllerListener {
+public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListItemListener, OnControllerListener, TvPlayer.PointListener {
     private TvPlayer player;
     private ArrayList<MediaModel> playList;
     private boolean isPlaying;
     private int mDuration;
     private int index;
-    private PlayEvent playEvent;
     private String path;
     private PlayerController controller;
+    private boolean showDialog;
+    private boolean showPoint;
+    private long currentTime;
 
-    public static Intent newIntent(Context mContext, ArrayList<MediaModel> playList, int index, int mDuration, boolean isPlaying) {
+    public static Intent newIntent(Context mContext, Bundle savedInstanceState) {
         Intent intent = new Intent(mContext, TvFullScreenPlayer.class);
-        intent.putExtra(Param.Constants.playlist, playList);
-        intent.putExtra(Param.Constants.mDuration, mDuration);
-        intent.putExtra(Param.Constants.index, index);
-        intent.putExtra(Param.Constants.isPlaying, isPlaying);
+        intent.putExtra(Param.Constants.transBundle, savedInstanceState);
         return intent;
     }
 
@@ -56,7 +54,7 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
     }
 
     public static Intent newIntent(Context mContext, String path) {
-        Intent intent = new Intent(mContext, FullScreenPlayer.class);
+        Intent intent = new Intent(mContext, TvFullScreenPlayer.class);
         intent.putExtra(Param.Constants.path, path);
         return intent;
     }
@@ -67,29 +65,34 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
         setContentView(R.layout.activity_tv_full_screen);
         if (getIntent().hasExtra(Param.Constants.playlist))
             playList = getIntent().getParcelableArrayListExtra(Param.Constants.playlist);
-        if (getIntent().hasExtra(Param.Constants.mDuration))
-            mDuration = getIntent().getIntExtra(Param.Constants.mDuration, -1);
-        if (getIntent().hasExtra(Param.Constants.isPlaying))
-            isPlaying = getIntent().getBooleanExtra(Param.Constants.isPlaying, false);
-        if (getIntent().hasExtra(Param.Constants.index))
-            index = getIntent().getIntExtra(Param.Constants.index, -1);
         if (getIntent().hasExtra(Param.Constants.path))
             path = getIntent().getStringExtra(Param.Constants.path);
+        if (getIntent().hasExtra(Param.Constants.transBundle)) {
+            Bundle transBundle = getIntent().getBundleExtra(Param.Constants.transBundle);
+            if (null == playList)
+                playList = transBundle.getParcelableArrayList(Param.BundleParam.mPlayList);
+            index = transBundle.getInt(Param.BundleParam.index, 0);
+            mDuration = transBundle.getInt(Param.BundleParam.currentPosition, 0);
+            isPlaying = transBundle.getBoolean(Param.BundleParam.isPlaying, false);
+            showDialog = transBundle.getBoolean(Param.BundleParam.showDialog, false);
+            showPoint = transBundle.getBoolean(Param.BundleParam.showPoint, false);
+        }
         setPlayer();
         setController();
     }
 
     private void setPlayer() {
-        playEvent = new PlayEvent();
         player = (TvPlayer) findViewById(R.id.player);
+        player.setOnPointListener(this);
         player.index = index;
+        player.isTV = true;
         player.isFullScreen = true;
-        player.isSkipFullScreenPlayer = true;
+        player.showDialog = showDialog;
+        player.showPoint = showPoint;
         if (null != playList) {
-            player.setVideoList(playList, true);
+            player.setVideoList(playList);
         } else if (!TextUtils.isEmpty(path)) {
             player.setVideoPath(path);
-            player.isTV = true;
         } else return;
         player.seekTo(mDuration);
         if (isPlaying) player.start();
@@ -115,9 +118,10 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
             case KeyEvent.KEYCODE_BACK:
                 if (GONE != controller.getController()) {
                     controller.hideController();
-                    return true;
+                } else {
+                    back();
                 }
-                break;
+                return true;
             case KeyEvent.KEYCODE_DPAD_DOWN:
             case KeyEvent.KEYCODE_DPAD_UP:
             case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -130,6 +134,24 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
         return super.onKeyDown(keyCode, event);
     }
 
+    private void back() {
+        if ((System.currentTimeMillis() - currentTime) > 2000) {
+            ToastUtil.getInstance(this).Short(getString(R.string.exit_player)).show();
+            currentTime = System.currentTimeMillis();
+        } else {
+            sendPlayBroadcast();
+        }
+    }
+
+    public void sendPlayBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction("com.huaxia.play");
+        intent.putExtra(Param.Constants.mDuration, player.getCurrentPosition());
+        intent.putExtra(Param.Constants.index, player.index);
+        intent.putExtra(Param.Constants.isPlaying, player.isPlaying());
+        sendBroadcast(intent);
+        player.showZoom(false);
+    }
 
     @Override
     protected void onResume() {
@@ -147,18 +169,13 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
 
     @Override
     protected void onDestroy() {
-        playEvent.setDuration(player.getCurrentPosition());
-        playEvent.setIndex(player.index);
-        playEvent.setPlaying(player.isPlaying());
-        EventBus.getDefault().post(playEvent);
-        mHandler.removeCallbacksAndMessages(null);
+        mHandler.removeCallbacksAndMessages(UPDATE_PLAYTIME);
         super.onDestroy();
     }
-
     //////////////////////////////////////
 
     /**
-     * playList的监听
+     * playList的监听（焦点，点击）
      */
     @Override
     public void setOnFocusChangeListener(View view, boolean b) {
@@ -167,7 +184,6 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
 
     @Override
     public void setOnClickListener(View view, int index) {
-        player.index = index;
     }
 
     /**
@@ -196,12 +212,12 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
 
     @Override
     public void controllerZoom() {
-        player.zoom();
+        sendPlayBroadcast();
     }
 
     @Override
     public void controllerBack() {
-        player.zoom();
+        sendPlayBroadcast();
     }
 
     @Override
@@ -247,5 +263,13 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
         if (player.isPlaying())
             controller.mSbProgress.setProgress(currentPosition * Param.Constants.maxProgress / ijkPlayerDuration);//即时更新ProgressBar进程
         mHandler.sendEmptyMessageDelayed(UPDATE_PLAYTIME, 100);
+    }
+
+    @Override
+    public void setOnPointListener() {
+        setAlphaAnimator(controller.mIvPlay, 0, 1);
+        player.setPlayerImageVisibility(VISIBLE);
+        controller.mIvPlay.setImageResource(R.drawable.restart_selector);
+        controller.mIvPlayPause.setImageResource(R.drawable.restart_selector);
     }
 }

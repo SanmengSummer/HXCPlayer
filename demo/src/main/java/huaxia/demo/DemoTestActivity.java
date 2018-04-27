@@ -1,5 +1,6 @@
 package huaxia.demo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -53,9 +54,7 @@ public class DemoTestActivity extends AppCompatActivity {
             mediaModel.setVideoPath(path);
             playList.add(mediaModel);
         }
-
     }
-
     private PhonePlayer mPlayerView;
     private TvPlayer mPlayerView2;
 
@@ -67,12 +66,14 @@ public class DemoTestActivity extends AppCompatActivity {
         mPlayerView2 = (TvPlayer) findViewById(R.id.player_video2);
         Button btn = (Button) findViewById(R.id.btn);
         Button btn2 = (Button) findViewById(R.id.btn2);
-        mPlayerView.setVideoList(playList, false);
-        mPlayerView2.setVideoList(playList, true);
+        Button btn3 = (Button) findViewById(R.id.btn3);
+        mPlayerView.setVideoList(playList);
+        mPlayerView2.setVideoList(playList);
+        mPlayerView.setShowPoint(true);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPlayerView2.zoom();
+                mPlayerView2.showZoom();
             }
         });
         btn2.setOnClickListener(new View.OnClickListener() {
@@ -81,12 +82,17 @@ public class DemoTestActivity extends AppCompatActivity {
                 mPlayerView2.playPause();
             }
         });
+        btn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(DemoTestActivity.this, NewActivity.class));
+            }
+        });
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        mPlayerView.pause();
     }
 
     @Override

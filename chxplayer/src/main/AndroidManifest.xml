@@ -19,7 +19,6 @@
             android:name=".widght.hxplayer.TvFullScreenPlayer"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-
     </application>
 
 </manifest>

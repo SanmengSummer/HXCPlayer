@@ -17,6 +17,7 @@ import java.util.TimerTask;
 import static android.media.AudioManager.FLAG_PLAY_SOUND;
 
 /**
+ * Phone版player
  * Created by huaxia on 2017/11/9.
  */
 

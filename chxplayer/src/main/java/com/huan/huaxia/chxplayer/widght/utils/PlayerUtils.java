@@ -1,9 +1,14 @@
 package com.huan.huaxia.chxplayer.widght.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -21,6 +26,14 @@ import java.util.ArrayList;
  */
 
 public class PlayerUtils {
+    private static PlayerUtils mInstance;
+    private int width;
+    private int height;
+    private boolean isChangePlayerSize;
+    private boolean isFullScreen;
+    private boolean isTV;
+    private Bundle instanceState;
+
     /**
      * 仅跳转到播放Activity
      *
@@ -64,50 +77,20 @@ public class PlayerUtils {
         activity.startActivity(isTv ? TvFullScreenPlayer.newIntent(activity, mPlayList) : FullScreenPlayer.newIntent(activity, mPlayList));
     }
 
-    /**
-     * 全屏和小屏的切换（不附带当前情况，重新开始播放）
-     *
-     * @param activity         所在activity
-     * @param player           player
-     * @param isSkipFullScreen 是否调到全Activity播放页面
-     * @param isFullScreen     目前是否是全屏
-     * @param isTV             是否是tv播放
-     * @param width            小屏player宽
-     * @param height           小屏player高
-     * @param mPlayList        播放列表
-     */
-    public static void skipFullScreenPlayer(Activity activity, SimplePlayer player, boolean isSkipFullScreen, boolean isFullScreen, boolean isTV, int width, int height, ArrayList<MediaModel> mPlayList) {
-        if (isSkipFullScreen && !isFullScreen) {
-            activity.startActivity(isTV ? TvFullScreenPlayer.newIntent(activity, mPlayList)
-                    : FullScreenPlayer.newIntent(activity, mPlayList));
-            player.pause();
-        } else {
-            skipFullScreenPlayer(activity, player, isSkipFullScreen, isFullScreen, isTV, width, height, mPlayList, 0, 0, false);
-        }
-    }
 
     /**
      * 全屏和小屏的切换（全参数）
      *
-     * @param activity         所在activity
-     * @param player           player
-     * @param isSkipFullScreen 是否调到全Activity播放页面
-     * @param isFullScreen     目前是否是全屏
-     * @param isTV             是否是tv播放
-     * @param width            小屏player宽
-     * @param height           小屏player高
-     * @param mPlayList        播放列表
-     * @param index            当前在播放列表中的位置
-     * @param currentPosition  当前播放的时间
-     * @param isPlaying        当前是否在播放
+     * @param activity 所在activity
+     * @param player   player
      */
-    public static void skipFullScreenPlayer(Activity activity, SimplePlayer player, boolean isSkipFullScreen, boolean isFullScreen, boolean isTV, int width, int height, ArrayList<MediaModel> mPlayList, int index, int currentPosition, boolean isPlaying) {
-        if (isSkipFullScreen) {
+    public void skipFullScreenPlayer(Activity activity, SimplePlayer player) {
+        if (!isChangePlayerSize) {
             if (isFullScreen) {
                 activity.finish();
             } else {
-                activity.startActivity(isTV ? TvFullScreenPlayer.newIntent(activity, mPlayList, index, currentPosition, isPlaying)
-                        : FullScreenPlayer.newIntent(activity, mPlayList, index, currentPosition, isPlaying));
+                activity.startActivity(isTV ? TvFullScreenPlayer.newIntent(activity, instanceState)
+                        : FullScreenPlayer.newIntent(activity, instanceState));
                 player.pause();
             }
         } else {
@@ -137,5 +120,22 @@ public class PlayerUtils {
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//clear flags
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//强制为竖屏
         }
+    }
+
+    public synchronized static PlayerUtils getInstance() {
+        if (null == mInstance) {
+            mInstance = new PlayerUtils();
+        }
+        return mInstance;
+    }
+
+    public void saveState(@Nullable Bundle savedInstanceState) {
+        if (null == savedInstanceState) return;
+        width = savedInstanceState.getInt(Param.BundleParam.width, 0);
+        height = savedInstanceState.getInt(Param.BundleParam.height, 0);
+        isChangePlayerSize = savedInstanceState.getBoolean(Param.BundleParam.isChangePlayerSize, false);
+        isFullScreen = savedInstanceState.getBoolean(Param.BundleParam.isFullScreen, false);
+        isTV = savedInstanceState.getBoolean(Param.BundleParam.isTV, false);
+        instanceState = savedInstanceState;
     }
 }

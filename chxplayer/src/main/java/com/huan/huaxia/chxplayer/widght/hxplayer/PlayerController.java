@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.huan.huaxia.chxplayer.R;
-import com.huan.huaxia.chxplayer.player.media.BasePlayer;
 import com.huan.huaxia.chxplayer.widght.utils.Param;
 import com.huan.huaxia.chxplayer.widght.adapter.PlayerListAdapter;
 import com.huan.huaxia.chxplayer.widght.listener.OnControllerListener;
@@ -44,14 +44,16 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     protected ImageView mIvPlay;
     protected ImageView mIvList;
     protected ImageView mIvZoom;
+    protected ImageView mIvVolume;
+    protected ImageView mIvScreenLuminance;
     protected RecyclerView mRecyclerView;
     protected LinearLayout mLlVolume;
     protected LinearLayout mLlLuminance;
     protected ProgressBar mPbVolume;
     protected TextView mTvScreenLuminance;
     protected TextView mName;
+    protected PlayerListAdapter mPlayListAdapter;
     private Context mContext;
-    private PlayerListAdapter mPlayListAdapter;
     private OnPlayListItemListener mOnPlayListItemListener;
     private OnProgressBarListener mOnProgressBarListener;
     private OnControllerListener mControllerListener;
@@ -100,7 +102,9 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
         mIvList = (ImageView) findViewById(R.id.iv_list);
         mIvPlay = (ImageView) findViewById(R.id.iv_play);
         mIvZoom = (ImageView) findViewById(R.id.iv_zoom);
+        mIvVolume = (ImageView) findViewById(R.id.iv_volume);
         mIvPlayPause = (ImageView) findViewById(R.id.iv_play_pause);
+        mIvScreenLuminance = (ImageView) findViewById(R.id.iv_screen_luminance);
         mSbProgress = (SeekBar) findViewById(R.id.sb_progress);
         mTvMusicTime = (TextView) findViewById(R.id.tvMusicTime);
         mTvMoveTime = (TextView) findViewById(R.id.tv_text_move_time);
@@ -114,7 +118,7 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
             mLlVolume = (LinearLayout) findViewById(R.id.ll_volume);
             mLlLuminance = (LinearLayout) findViewById(R.id.ll_screen_luminance);
             mPbVolume = (ProgressBar) findViewById(R.id.pb_volume);
-            mTvScreenLuminance = (TextView) findViewById(R.id.tv__screen_luminance);
+            mTvScreenLuminance = (TextView) findViewById(R.id.tv_screen_luminance);
         }
         setControllerListener();
         showPlayerList(null, null, 0);
@@ -143,18 +147,18 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
      * 隐藏controller
      */
     public void hideController() {
-        if (mRl.getVisibility() != View.GONE) {
+        if (mRl.getVisibility() != View.GONE)
             mRl.setVisibility(View.GONE);
-        }
+        if (mRecyclerView.getVisibility() != INVISIBLE)
+            mRecyclerView.setVisibility(INVISIBLE);
     }
 
     /**
      * 显示controller
      */
     public void showController() {
-        if (mRl.getVisibility() != View.VISIBLE) {
+        if (mRl.getVisibility() != View.VISIBLE)
             mRl.setVisibility(View.VISIBLE);
-        }
     }
 
     /**
@@ -260,6 +264,4 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     public void setControllerListener(OnControllerListener listener) {
         mControllerListener = listener;
     }
-
-
 }

@@ -1,26 +1,16 @@
 package com.huan.huaxia.chxplayer.widght.hxplayer;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 
-import com.huan.huaxia.chxplayer.widght.utils.PlayerUtils;
-import com.huan.huaxia.chxplayer.widght.event.PlayEvent;
-import com.huan.huaxia.chxplayer.widght.model.MediaModel;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
+import com.huan.huaxia.chxplayer.widght.utils.ToastUtil;
 
 /**
- * 可加新功能
+ * Tv版player可追加新功能
  * Created by huaxia on 2017/11/9.
  */
 
-public class TvPlayer extends SimplePlayer {
+public class TvPlayer extends SimplePlayer implements SimplePlayer.PointListener {
     public TvPlayer(Context context) {
         super(context);
         initExtra();
@@ -37,42 +27,31 @@ public class TvPlayer extends SimplePlayer {
     }
 
     private void initExtra() {
-        EventBus.getDefault().register(this);
+        onPointListener(this);
         isTV = true;
     }
 
-    public void setVideoList(ArrayList<MediaModel> playList) {
-        setVideoList(playList, false);
+    @Override
+    public void showZoom(boolean isChangePlayerSize) {
+        super.showZoom(isChangePlayerSize);
     }
 
-    public void setVideoList(ArrayList<MediaModel> playList, boolean isSkipFullScreenPlayer) {
-        super.setVideoList(playList);
-        this.isSkipFullScreenPlayer = isSkipFullScreenPlayer;
-    }
-
-    public void zoom() {
-        PlayerUtils.skipFullScreenPlayer((Activity) mContext, this, isSkipFullScreenPlayer, isFullScreen, true, width, height, mPlayList, index, getCurrentPosition(), isPlaying());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
-    public void onSynPlayer(PlayEvent event) {
-        if (null != event) {
-            this.index = event.index;
-            stopPlayback();
-            super.setVideoPath(mPlayList.get(index).videoPath);
-            seekTo(event.duration);
-            if (event.isPlaying) start();
-            else pause();
+    @Override
+    public void onPointListener() {
+        ToastUtil.getInstance(mContext).Long("没有搜索有效的视频源，请重试").show();
+        if (null != mListener) {
+            mListener.setOnPointListener();
         }
     }
 
-    /**
-     * 界面销毁时调用方法
-     */
-    @Override
-    public void releaseWithoutStop() {
-        super.releaseWithoutStop();
-        EventBus.getDefault().unregister(this);//解除订阅
+    private PointListener mListener;
+
+    public void setOnPointListener(PointListener listener) {
+        mListener = listener;
+    }
+
+    interface PointListener {
+        void setOnPointListener();
     }
 
 }

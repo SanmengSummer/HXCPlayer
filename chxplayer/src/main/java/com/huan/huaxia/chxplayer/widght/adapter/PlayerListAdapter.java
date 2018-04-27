@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -52,9 +53,9 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.My
                 @Override
                 public void onClick(View view) {
                     if (index != position) {
+                        mPlayerView.index = position;
                         mPlayerView.setVideoPath(mediaModel.videoPath);
                         mPlayerView.start();
-                        index = position;
                     }
                     if (null != mListener)
                         mListener.setOnClickListener(view, position);
@@ -72,6 +73,11 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.My
                         mListener.setOnFocusChangeListener(view, b);
                 }
             });
+            if (null != mChangeSizeListener) {
+                mChangeSizeListener.setChangeImageSizeListener(holder.image);
+                mChangeSizeListener.setChangeTextSizeListener(holder.text);
+                mChangeSizeListener.setChangeItemViewSizeListener((LinearLayout) holder.itemView);
+            }
         }
     }
 
@@ -114,6 +120,26 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.My
         void setOnFocusChangeListener(View view, boolean b);
 
         void setOnClickListener(View view, int index);
+
+    }
+
+    private ChangeSizeListener mChangeSizeListener;
+
+    /**
+     * 设置ChangeSize监听
+     *
+     * @param listener
+     */
+    public void setChangeSizeListener(ChangeSizeListener listener) {
+        mChangeSizeListener = listener;
+    }
+
+    public interface ChangeSizeListener {
+        void setChangeTextSizeListener(TextView view);
+
+        void setChangeImageSizeListener(ImageView view);
+
+        void setChangeItemViewSizeListener(LinearLayout view);
 
     }
 }

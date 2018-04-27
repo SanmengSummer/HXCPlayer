@@ -4,6 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentRight="true"
+    android:layout_alignParentEnd="true"
     android:layout_centerVertical="true"
     android:gravity="center"
     android:orientation="vertical"
@@ -12,16 +13,16 @@
 
     <ImageView
         android:id="@+id/iv_screen_luminance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/x50"
+        android:layout_height="@dimen/x50"
         android:src="@mipmap/brightness_video" />
 
     <TextView
-        android:id="@+id/tv__screen_luminance"
+        android:id="@+id/tv_screen_luminance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/x5"
-        android:text="10%"
+        android:text="@string/_0"
         android:textColor="@color/white"
         android:textSize="@dimen/x30" />
 </LinearLayout>
