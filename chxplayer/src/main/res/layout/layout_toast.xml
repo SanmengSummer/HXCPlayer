@@ -11,8 +11,8 @@
         android:background="@drawable/shape_toast_radius_bg"
         android:gravity="center"
         android:minWidth="240dp"
-        android:padding="14dp"
-        android:text="测试测试"
+        android:padding="@dimen/x14"
+        android:text="null"
         android:textColor="#fff"
-        android:textSize="22sp" />
+        android:textSize="@dimen/x25" />
 </LinearLayout>

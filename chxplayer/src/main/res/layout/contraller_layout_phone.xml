@@ -3,8 +3,7 @@
     android:id="@+id/rl"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/colorTransparent"
-    android:focusable="true">
+    android:background="@color/colorTransparent">
 
     <ImageView
         android:id="@+id/iv_play"
@@ -14,6 +13,19 @@
         android:background="@drawable/image_selector"
         android:src="@drawable/pause_selector" />
 
+    <TextView
+        android:layout_marginTop="@dimen/x10"
+        android:id="@+id/tv_text_move_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_play"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_color_trasparent_black"
+        android:padding="@dimen/x5"
+        android:text="@string/_00_00"
+        android:textColor="@color/lightGray"
+        android:textSize="@dimen/x30" />
+
     <include layout="@layout/add_volume_layout" />
 
     <include layout="@layout/add_screen_layout" />
@@ -22,6 +34,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorTransparentBlack"
         android:orientation="horizontal">
 
         <ImageView
@@ -32,14 +45,17 @@
             android:background="@drawable/image_selector"
             android:focusable="true"
             android:src="@mipmap/video_back"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/iv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/x10"
+            android:ellipsize="marquee"
             android:gravity="center_vertical"
+            android:maxLines="1"
+            android:maxWidth="@dimen/x200"
             android:textColor="@color/white"
             android:textSize="@dimen/x25" />
 
@@ -68,19 +84,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:background="@color/colorTransparentBlack"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/x10"
+        android:paddingRight="@dimen/x10">
 
-
-        <TextView
-            android:id="@+id/tv_text_move_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/_00_00"
-            android:textColor="@color/lightGray"
-            android:textSize="@dimen/x30"
-            android:visibility="invisible" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -101,8 +109,8 @@
                 android:id="@+id/tvMusicTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:gravity="center"
                 android:text="@string/_00_00_00_00"
@@ -132,7 +140,6 @@
                 android:thumb="@mipmap/audio_seek_thumb" />
 
             <ImageView
-                android:padding="@dimen/x1"
                 android:id="@+id/iv_zoom"
                 android:layout_width="@dimen/x35"
                 android:layout_height="@dimen/x35"
@@ -142,6 +149,7 @@
                 android:layout_marginTop="@dimen/x5"
                 android:background="@drawable/image_selector"
                 android:focusable="true"
+                android:padding="@dimen/x1"
                 android:src="@mipmap/enlarge" />
         </LinearLayout>
     </LinearLayout>

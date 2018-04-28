@@ -38,7 +38,6 @@ public class TvPlayer extends SimplePlayer implements SimplePlayer.PointListener
 
     @Override
     public void onPointListener() {
-        ToastUtil.getInstance(mContext).Long("没有搜索有效的视频源，请重试").show();
         if (null != mListener) {
             mListener.setOnPointListener();
         }

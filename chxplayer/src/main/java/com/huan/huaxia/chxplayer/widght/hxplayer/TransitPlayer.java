@@ -1,5 +1,6 @@
 package com.huan.huaxia.chxplayer.widght.hxplayer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
@@ -117,8 +118,6 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
         controller = new PlayerController(mContext);
         controller.setBackgroundColor(Color.TRANSPARENT);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        int dimension = (int) getResources().getDimension(R.dimen.x10);
-        params.setMargins(dimension, dimension, dimension, dimension);
         this.addView(controller, params);
         mRecyclerView = controller.mRecyclerView;
         mRl = controller.mRl;
@@ -241,15 +240,12 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
         setCountTimeThreadReset();
         if (playError && showPoint) {
             playError = false;
-            if (null != loading)
-                loading.setVisibility(View.VISIBLE);
-            if (null != mPlayList) {
-                setVideoPath(mPlayList.get(index).videoPath);
-                start();
-            }
-        } else {
-            playPause();
+            setLoadingVisibility(VISIBLE);
+            if (null != mPlayList) setVideoPath(mPlayList.get(index).videoPath);
+
         }
+        playPause();
+
     }
 
     @Override
@@ -394,72 +390,71 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
     //动态改变Controller里控件的Size
     private void changeControllerSize() {
         if (!isFullScreen) {
-            mRecyclerView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
-            final int tempSize35 = 35 * height / 1080;
-            int tempSize40 = 40 * height / 1080;
-            int tempSize45 = 45 * height / 1080;
-            int tempSize50 = 50 * height / 1080;
-            final int tempSize70 = 70 * height / 1080;
-            final int tempSize160 = 160 * height / 1080;
-            final int tempSize10 = 10 * height / 1080 == 0 ? 1 : 10 * height / 1080;
-            int tempSize5 = 5 * height / 1080 == 0 ? 1 : 5 * height / 1080;
+            int windowWidth = ((Activity) mContext).getWindowManager().getDefaultDisplay().getWidth();
+            final int tempSizeText = (25 * height + windowWidth / 2) / windowWidth;
+            final int tempSize20 = (20 * height + windowWidth / 2) / windowWidth;
+            final int tempSizeListImage = (80 * height + windowWidth / 2) / windowWidth;
+            final int tempSizeSmallPlay = (90 * height + windowWidth / 2) / windowWidth;
+            final int tempSize160 = (160 * height + windowWidth / 2) / windowWidth;
+            final int tempSize130 = (130 * height + windowWidth / 2) / windowWidth;
+            final int tempSize200 = (200 * height + windowWidth / 2) / windowWidth;
+            final int tempSize10 = (10 * height + windowWidth / 2) / windowWidth == 0 ? 1 : (10 * height + windowWidth / 2) / windowWidth;
+            final int tempSize5 = (5 * height + windowWidth / 2) / windowWidth == 0 ? 1 : (5 * height + windowWidth / 2) / windowWidth;
 
             RelativeLayout.LayoutParams layoutParamsWRAPR = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             LinearLayout.LayoutParams layoutParamsWRAP = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            LinearLayout.LayoutParams layoutParams40 = new LinearLayout.LayoutParams(tempSize40, tempSize40);
-            LinearLayout.LayoutParams layoutParams45 = new LinearLayout.LayoutParams(tempSize45, tempSize45);
-            RelativeLayout.LayoutParams layoutParams160 = new RelativeLayout.LayoutParams(tempSize160, tempSize160);
-            RelativeLayout.LayoutParams layoutParams70 = new RelativeLayout.LayoutParams(tempSize70, tempSize70);
-            LinearLayout.LayoutParams layoutParams50 = new LinearLayout.LayoutParams(tempSize50, tempSize50);
-            LinearLayout.LayoutParams layoutParams10_160 = new LinearLayout.LayoutParams(tempSize10, tempSize160);
-            LinearLayout.LayoutParams layoutParamsSbProgress = new LinearLayout.LayoutParams(width - tempSize160, 5);
-            layoutParams40.setMargins(tempSize5, tempSize5, tempSize5, tempSize5);
-            layoutParams45.setMargins(tempSize5, tempSize5, tempSize5, tempSize5);
-            layoutParams160.addRule(RelativeLayout.CENTER_IN_PARENT);
-            layoutParamsWRAP.setMargins(tempSize10, tempSize10, tempSize10, tempSize10);
-            layoutParamsWRAPR.setMargins(tempSize50, 0, 0, 0);
+            RelativeLayout.LayoutParams layoutParamsBigPlay = new RelativeLayout.LayoutParams(tempSize200, tempSize200);
+            RelativeLayout.LayoutParams layoutParamsSmallPlay = new RelativeLayout.LayoutParams(tempSizeSmallPlay, tempSizeSmallPlay);
+            LinearLayout.LayoutParams layoutParamsListImage = new LinearLayout.LayoutParams(tempSizeListImage, tempSizeListImage);
+            LinearLayout.LayoutParams layoutParamsPbVolume = new LinearLayout.LayoutParams(tempSize10, tempSize160);
+            LinearLayout.LayoutParams layoutParamsSbProgress = new LinearLayout.LayoutParams(this.width - tempSize160, 7);
+            layoutParamsListImage.setMargins(tempSize5, tempSize5, tempSize5, tempSize5);
+            layoutParamsSmallPlay.addRule(RelativeLayout.CENTER_VERTICAL);
+            layoutParamsBigPlay.addRule(RelativeLayout.CENTER_IN_PARENT);
+            layoutParamsWRAP.setMargins(tempSize20, tempSize20, tempSize20, tempSize20);
+            layoutParamsWRAPR.setMargins(tempSizeListImage, 0, 0, 0);
             layoutParamsWRAPR.addRule(RelativeLayout.CENTER_VERTICAL);
 
-            mIvPlay.setLayoutParams(layoutParams160);
-            mIbBack.setLayoutParams(layoutParams45);
-            mIvList.setLayoutParams(layoutParams45);
-            mIvZoom.setLayoutParams(layoutParams45);
-            mIvPlayPause.setLayoutParams(layoutParams70);
-            mIvVolume.setLayoutParams(layoutParams40);
-            mIvScreenLuminance.setLayoutParams(layoutParams50);
-            mPbVolume.setLayoutParams(layoutParams10_160);
+            mIvPlay.setLayoutParams(layoutParamsBigPlay);
+            mIbBack.setLayoutParams(layoutParamsListImage);
+            mIvList.setLayoutParams(layoutParamsListImage);
+            mIvZoom.setLayoutParams(layoutParamsListImage);
+            mIvZoom.setPadding(tempSize5, tempSize5, tempSize5, tempSize5);
+            mIvPlayPause.setLayoutParams(layoutParamsSmallPlay);
+            mIvVolume.setLayoutParams(layoutParamsListImage);
+            mIvScreenLuminance.setLayoutParams(layoutParamsListImage);
+            mPbVolume.setLayoutParams(layoutParamsPbVolume);
 
             mLlVolume.setPadding(tempSize5, tempSize5, tempSize5, tempSize5);
             mLlVolume.setLayoutParams(layoutParamsWRAPR);
 
-            mLlLuminance.setPadding(0, 0, tempSize50, 0);
+            mLlLuminance.setPadding(0, 0, tempSizeListImage, 0);
 
             mSbProgress.setLayoutParams(layoutParamsSbProgress);
             mSbProgress.setThumb(mContext.getResources().getDrawable(R.mipmap.audio_seek_thumb2));
             mSbProgress.setPadding(2, 1, 2, 1);
 
             mName.setLayoutParams(layoutParamsWRAP);
-            mName.setTextSize(tempSize35);
-
-            mTvMusicTime.setTextSize(tempSize35);
-            mTvMoveTime.setTextSize(tempSize35);
-            mTvScreenLuminance.setTextSize(tempSize35);
+            mName.setTextSize(tempSizeText);
+            mTvMusicTime.setTextSize(tempSizeText);
+            mTvMoveTime.setTextSize(tempSizeText);
+            mTvScreenLuminance.setTextSize(tempSizeText);
             mPlayListAdapter.setChangeSizeListener(new PlayerListAdapter.ChangeSizeListener() {
                 @Override
                 public void setChangeTextSizeListener(TextView view) {
-                    view.setTextSize(tempSize35);
+                    view.setTextSize(tempSize20);
                 }
 
                 @Override
                 public void setChangeImageSizeListener(ImageView view) {
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(tempSize70, tempSize160);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(tempSize160, tempSize130);
                     view.setLayoutParams(layoutParams);
                 }
 
                 @Override
                 public void setChangeItemViewSizeListener(LinearLayout view) {
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(2, 2, 2, 2);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(tempSize200, tempSize200);
+                    layoutParams.setMargins(1, 1, 1, 1);
                     view.setLayoutParams(layoutParams);
                 }
             });

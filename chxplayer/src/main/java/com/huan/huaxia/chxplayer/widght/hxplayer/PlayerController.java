@@ -32,7 +32,6 @@ import java.util.ArrayList;
  * controller player控制器
  * Created by huaxia on 2017/12/28.
  */
-
 public class PlayerController extends FrameLayout implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, PlayerListAdapter.OnPlayListItemListener {
     protected ViewGroup controller;
     protected SeekBar mSbProgress;
@@ -107,7 +106,6 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
         mIvScreenLuminance = (ImageView) findViewById(R.id.iv_screen_luminance);
         mSbProgress = (SeekBar) findViewById(R.id.sb_progress);
         mTvMusicTime = (TextView) findViewById(R.id.tvMusicTime);
-        mTvMoveTime = (TextView) findViewById(R.id.tv_text_move_time);
         mSbProgress.setMax(Param.Constants.maxProgress);
         if (isTvValue) {
             mForward = (ImageView) findViewById(R.id.iv_forward);
@@ -115,6 +113,7 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
             mForward.setOnClickListener(this);
             mBackward.setOnClickListener(this);
         } else {
+            mTvMoveTime = (TextView) findViewById(R.id.tv_text_move_time);
             mLlVolume = (LinearLayout) findViewById(R.id.ll_volume);
             mLlLuminance = (LinearLayout) findViewById(R.id.ll_screen_luminance);
             mPbVolume = (ProgressBar) findViewById(R.id.pb_volume);

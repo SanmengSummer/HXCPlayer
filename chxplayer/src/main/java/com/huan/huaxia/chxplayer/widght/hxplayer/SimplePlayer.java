@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -39,6 +40,7 @@ public class SimplePlayer extends BasePlayer {
     protected boolean isSbProgressChange;
     protected boolean isChangePlayerSize;
     protected boolean isFullScreen;
+    protected boolean isSkip;
     protected boolean isTV;//是否是TV端播放器，默认不是；
     protected ArrayList<MediaModel> mPlayList;
     protected AudioManager audioManager;
@@ -52,7 +54,6 @@ public class SimplePlayer extends BasePlayer {
     protected boolean playError;
     private boolean hidePlayerImage;
     private boolean hideLoading;
-    private boolean notFirstShow;
     protected boolean showZoomPlayer;
 
     public SimplePlayer(Context context) {
@@ -114,7 +115,6 @@ public class SimplePlayer extends BasePlayer {
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libmIjkplayer.so");
         setListener();
-        notFirstShow = false;
         Glide.with(mContext).load(mPlayList.get(index).getImagPath()).placeholder(R.mipmap.icon_empty).into(playerImage);
         super.setVideoPath(path);
     }
@@ -169,6 +169,7 @@ public class SimplePlayer extends BasePlayer {
         Bundle outState = setBundle(isChangePlayerSize);
         mInstance.saveState(outState);
         mInstance.skipFullScreenPlayer((Activity) mContext, this);
+        isSkip = true;
     }
 
     /**
@@ -198,15 +199,19 @@ public class SimplePlayer extends BasePlayer {
     @Override
     public void pause() {
         super.pause();
+        setLoadingVisibility(GONE);
     }
 
     @Override
     public void start() {
         playerImage.setVisibility(GONE);
+        if (!playError)
+        setLoadingVisibility(VISIBLE);
         super.start();
     }
 
     public void setLoadingVisibility(int visibility) {
+        if (null != loading)
         loading.setVisibility(visibility);
     }
 
@@ -231,7 +236,8 @@ public class SimplePlayer extends BasePlayer {
             public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
                 playError = true;
                 setLoadingVisibility(GONE);
-                setDialogOrPoint();
+                if (!isSkip)
+                    setDialogOrPoint(i);
                 return true;
             }
         };
@@ -243,15 +249,23 @@ public class SimplePlayer extends BasePlayer {
             }
         };
         //播放缓冲
+//        int MEDIA_INFO_VIDEO_RENDERING_START = 3;//视频准备渲染
+//        int MEDIA_INFO_BUFFERING_START = 701;//开始缓冲
+//        int MEDIA_INFO_BUFFERING_END = 702;//缓冲结束
+//        int MEDIA_INFO_VIDEO_ROTATION_CHANGED = 10001;//视频选择信息
+//        int MEDIA_ERROR_SERVER_DIED = 100;//视频中断，一般是视频源异常或者不支持的视频类型。
+//        int MEDIA_ERROR_IJK_PLAYER = -10000,//一般是视频源有问题或者数据格式不支持，比如音频不是AAC之类的
+//        int MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK = 200;//数据错误没有有效的回收
         IMediaPlayer.OnInfoListener onInfoListener = new IMediaPlayer.OnInfoListener() {
             @Override
             public boolean onInfo(IMediaPlayer iMediaPlayer, int i, int i1) {
-                if (i == IMediaPlayer.MEDIA_INFO_BUFFERING_START) {
-                    if (notFirstShow)
+                switch (i) {
+                    case IMediaPlayer.MEDIA_INFO_BUFFERING_START:
                         setLoadingVisibility(VISIBLE);
-                } else if (i == IMediaPlayer.MEDIA_INFO_BUFFERING_END) {
-                    notFirstShow = true;
-                    setLoadingVisibility(GONE);
+                        break;
+                    default:
+                        setLoadingVisibility(GONE);
+                        break;
                 }
                 return true;
             }
@@ -270,7 +284,7 @@ public class SimplePlayer extends BasePlayer {
     }
 
     //设置一个播放错误提示dialog
-    private void setDialogOrPoint() {
+    private void setDialogOrPoint(int error) {
         if (!isPlaying() && showDialog)
             DialogUtil.showUnSubscribeDialog(mContext, isTV, isFullScreen);
         else if (!isPlaying() && showPoint) {
@@ -321,7 +335,7 @@ public class SimplePlayer extends BasePlayer {
 
     /**
      * @param isChangePlayerSize 设置controller全屏方式
-     * （false为跳转到FullScreenPlayer或TVScreenPlayer，true则是改变player尺寸为全屏）
+     *                           （false为跳转到FullScreenPlayer或TVScreenPlayer，true则是改变player尺寸为全屏）
      */
     public void setIsChangePlayerSize(boolean isChangePlayerSize) {
         this.isChangePlayerSize = isChangePlayerSize;
@@ -334,7 +348,7 @@ public class SimplePlayer extends BasePlayer {
         if (showZoomPlayer) {
             unRegisterReceiver();
         }
-        pause();
+//        pause();
     }
 
     //发送全屏切小屏参数传递的广播

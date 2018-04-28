@@ -115,7 +115,6 @@ public class ToastUtil {
         if (toast != null) {
             toast.setText(message);
             toast.setDuration(Toast.LENGTH_SHORT);
-            Log.e("HX: ", message+"");
         }
         return this;
     }

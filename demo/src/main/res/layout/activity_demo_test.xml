@@ -3,9 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/x70"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context="com.huan.huaxia.chxplayer.DemoTestActivity">
+    tools:context=".DemoTestActivity">
 
 
     <com.huan.huaxia.chxplayer.widght.hxplayer.PhonePlayer

@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/x5"
+    android:layout_width="@dimen/x100"
+    android:layout_height="@dimen/x80"
+    android:layout_margin="@dimen/x2"
     android:background="@drawable/image_selector"
     android:focusable="true"
     android:orientation="vertical">
 
     <ImageView
+        android:scaleType="fitXY"
         android:id="@+id/iv"
         android:layout_width="@dimen/x80"
         android:layout_height="@dimen/x60"
-        android:layout_margin="@dimen/x3" />
+        android:layout_gravity="center_horizontal" />
 
     <TextView
         android:id="@+id/tv"
-        android:layout_width="@dimen/x80"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:ellipsize="marquee"
-        android:gravity="center"
         android:maxLines="1"
         android:text="null"
         android:textColor="@android:color/white"

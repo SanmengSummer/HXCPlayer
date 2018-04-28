@@ -19,8 +19,8 @@ public class DemoTestActivity extends AppCompatActivity {
     static {
         list.add("http://192.168.80.78:8080/hh.mp4");
         list.add("http://192.168.80.78:8080/yij.mp4");
-        list.add("http://s2.i.qingcdn.com/edu-test-output/CDN2016091200001_master_playlist.m3u8");
-        list.add("http://lecloud.educdn.huan.tv/mediadns/ts/BBS/GXHZ/cdn2017042700001.ts");
+        list.add("http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4");
+        list.add("https://res.exexm.com/cw_145225549855002");
         list.add("http://s2.i.qingcdn.com/edu-test-output/CDN2016091200001_848x480.m3u8");
         list.add("http://s2.i.qingcdn.com/edu-test-output/CDN2016091200001_1280x720.m3u8");
         list.add("http://s2.i.qingcdn.com/edu-test-output/CDN2016091200001_848x480.ts");
@@ -49,12 +49,13 @@ public class DemoTestActivity extends AppCompatActivity {
         list.add("http://lecloud.educdn.huan.tv/mediadns/ts/AK/CDN2016051800228.mp4");
         for (String path : list) {
             MediaModel mediaModel = new MediaModel();
-            mediaModel.setName(path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf(".")));
+            mediaModel.setName(path.substring(path.lastIndexOf("/") + 1,path.lastIndexOf("/") <path.lastIndexOf(".") ? path.lastIndexOf(".") : path.length()));
             mediaModel.setImagPath("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1514542212294&di=6bce8e8e474a1bd472b87af138992eee&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2F94cad1c8a786c91702b252f3c03d70cf3ac75742.jpg");
             mediaModel.setVideoPath(path);
             playList.add(mediaModel);
         }
     }
+
     private PhonePlayer mPlayerView;
     private TvPlayer mPlayerView2;
 
@@ -70,6 +71,7 @@ public class DemoTestActivity extends AppCompatActivity {
         mPlayerView.setVideoList(playList);
         mPlayerView2.setVideoList(playList);
         mPlayerView.setShowPoint(true);
+        mPlayerView2.setShowPoint(true);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

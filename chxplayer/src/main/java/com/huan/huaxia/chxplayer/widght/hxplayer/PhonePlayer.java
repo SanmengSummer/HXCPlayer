@@ -157,13 +157,15 @@ public class PhonePlayer extends TransitPlayer {
     private void setVolume(float y) {
         if (null != mOnVideoScreenMoveListener)
             mOnVideoScreenMoveListener.moveRightY(y);
-        //得到手机音乐音量的最大值
-        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        //设置音量大小
-        int currentVolume = (int) (y * maxVolume / 50);//折算成系统音量的单位
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mCurVolume + currentVolume, FLAG_PLAY_SOUND);//FLAG_SHOW_UI显示音量；FLAG_PLAY_SOUND 调整音量时播放声音；0；
-        mLlVolume.setVisibility(VISIBLE);
-        mPbVolume.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) * 100 / maxVolume);
+        else {
+            //得到手机音乐音量的最大值
+            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            //设置音量大小
+            int currentVolume = (int) (y * maxVolume / 50);//折算成系统音量的单位
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mCurVolume + currentVolume, FLAG_PLAY_SOUND);//FLAG_SHOW_UI显示音量；FLAG_PLAY_SOUND 调整音量时播放声音；0；
+            mLlVolume.setVisibility(VISIBLE);
+            mPbVolume.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) * 100 / maxVolume);
+        }
     }
 
     /**
@@ -172,18 +174,20 @@ public class PhonePlayer extends TransitPlayer {
     private void setScreenLuminance(float brightness) {
         if (null != mOnVideoScreenMoveListener)
             mOnVideoScreenMoveListener.moveLeftY(brightness);
-        brightness = brightness / 100;
-        Window window = ((Activity) mContext).getWindow();
-        WindowManager.LayoutParams lp = window.getAttributes();
-        lp.screenBrightness = systemBrightness + brightness;
-        if (lp.screenBrightness > 1.0f) {
-            lp.screenBrightness = 1.0f;
-        } else if (lp.screenBrightness < 0.01f) {
-            lp.screenBrightness = 0.01f;
+        else {
+            brightness = brightness / 100;
+            Window window = ((Activity) mContext).getWindow();
+            WindowManager.LayoutParams lp = window.getAttributes();
+            lp.screenBrightness = systemBrightness + brightness;
+            if (lp.screenBrightness > 1.0f) {
+                lp.screenBrightness = 1.0f;
+            } else if (lp.screenBrightness < 0.01f) {
+                lp.screenBrightness = 0.01f;
+            }
+            window.setAttributes(lp);
+            mLlLuminance.setVisibility(VISIBLE);
+            mTvScreenLuminance.setText((int) (lp.screenBrightness * 100) + "%");
         }
-        window.setAttributes(lp);
-        mLlLuminance.setVisibility(VISIBLE);
-        mTvScreenLuminance.setText((int) (lp.screenBrightness * 100) + "%");
     }
 
     /**
@@ -192,15 +196,17 @@ public class PhonePlayer extends TransitPlayer {
     private void setSeekVideoDuration(float x) {
         if (null != mOnVideoScreenMoveListener)
             mOnVideoScreenMoveListener.moveX(x);
-        move = (int) (getCurrentPosition() + x * getDuration() / 100);
-        if (move <= 0) {
-            move = 0;
-        } else if (move > getDuration()) {
-            move = getDuration();
-        }
-        mTvMoveTime.setVisibility(VISIBLE);
-        mTvMoveTime.setText(StringUtils.formatPlayTime(move));
+        else {
+            move = (int) (getCurrentPosition() + x * getDuration() / 100);
+            if (move <= 0) {
+                move = 0;
+            } else if (move > getDuration()) {
+                move = getDuration();
+            }
+            mTvMoveTime.setVisibility(VISIBLE);
+            mTvMoveTime.setText(StringUtils.formatPlayTime(move));
 //        seekTo(move);
+        }
     }
 
 

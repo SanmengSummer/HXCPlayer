@@ -6,6 +6,7 @@
     <color name="colorTransparent">#00000000</color>
     <color name="colorHalfTransparent">#a1c7bcc0</color>
     <color name="colorQuarterTransparent">#64707070</color>
+    <color name="colorTransparentBlack">#79161616</color>
     <color name="colorGray">#ebc4c3c3</color>
     <color name="lightGray">#eadfdddd</color>
     <color name="focus">#00ace0</color>

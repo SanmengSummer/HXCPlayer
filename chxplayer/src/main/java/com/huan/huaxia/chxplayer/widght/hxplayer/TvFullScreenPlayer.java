@@ -2,6 +2,7 @@ package com.huan.huaxia.chxplayer.widght.hxplayer;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -40,6 +41,7 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
     private boolean showDialog;
     private boolean showPoint;
     private long currentTime;
+    private boolean isRe;
 
     public static Intent newIntent(Context mContext, Bundle savedInstanceState) {
         Intent intent = new Intent(mContext, TvFullScreenPlayer.class);
@@ -97,6 +99,7 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
         player.seekTo(mDuration);
         if (isPlaying) player.start();
         else player.pause();
+
     }
 
     private void setController() {
@@ -107,9 +110,9 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
         controller.showController();
         if (null != playList) {
             controller.showListData(player, playList, index);
+            controller.mName.setText(playList.get(index).name);
         }
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -155,6 +158,7 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
 
     @Override
     protected void onResume() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//强制横屏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);//设置成全屏模式
         mHandler.sendEmptyMessage(UPDATE_PLAYTIME);
         super.onResume();
@@ -164,11 +168,14 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
     protected void onPause() {
         player.pause();
         mHandler.removeMessages(UPDATE_PLAYTIME);
+        controller.mIvPlay.setImageResource(R.drawable.play_selector);
+        controller.mIvPlayPause.setImageResource(R.drawable.play_selector);
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
+        player.isSkip = false;
         mHandler.removeCallbacksAndMessages(UPDATE_PLAYTIME);
         super.onDestroy();
     }
@@ -184,6 +191,11 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
 
     @Override
     public void setOnClickListener(View view, int index) {
+        if (null != playList && this.index != index) {
+            controller.mName.setText(playList.get(index).name);
+            controller.mIvPlay.setImageResource(R.drawable.play_selector);
+            controller.mIvPlayPause.setImageResource(R.drawable.play_selector);
+        }
     }
 
     /**
@@ -199,6 +211,11 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
             controller.mIvPlay.setImageResource(R.drawable.play_selector);
             controller.mIvPlayPause.setImageResource(R.drawable.play_selector);
             setAlphaAnimator(controller.mIvPlay, 1, 0);
+            if (isRe) {
+                player.playError = false;
+                player.setLoadingVisibility(VISIBLE);
+                if (null != playList) player.setVideoPath(playList.get(index).videoPath);
+            }
         }
         player.playPause();
     }
@@ -253,8 +270,6 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
 
     private void updatePlayTime() {
         controller.mIvPlay.setVisibility(player.isPlaying() ? GONE : VISIBLE);
-        controller.mIvPlay.setImageResource(player.isPlaying() ? R.drawable.play_selector : R.drawable.pause_selector);
-        controller.mIvPlayPause.setImageResource(player.isPlaying() ? R.drawable.play_selector : R.drawable.pause_selector);
         int currentPosition = player.getCurrentPosition();
         int ijkPlayerDuration = player.getDuration();
         String position = StringUtils.formatPlayTime(currentPosition);
@@ -267,9 +282,11 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
 
     @Override
     public void setOnPointListener() {
+        isRe = true;
         setAlphaAnimator(controller.mIvPlay, 0, 1);
         player.setPlayerImageVisibility(VISIBLE);
         controller.mIvPlay.setImageResource(R.drawable.restart_selector);
         controller.mIvPlayPause.setImageResource(R.drawable.restart_selector);
+        ToastUtil.getInstance(this).Long("没有搜索有效的视频源，请重试").show();
     }
 }
