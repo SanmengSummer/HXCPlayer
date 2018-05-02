@@ -1,10 +1,12 @@
 #HXPlayer 使用说明
 #0、使用初始化：
 0.1 添加依赖    compile 'com.huan.huaxia:chxplayer:1.2.1'
+
 0.2 具体Demo    https://github.com/SanmengSummer/HXCPlayer
-0.3 使用view    可使用最基础的SimplePlayer
-                亦可使用phone版的PhonePlayer的View控件和FullScreenPlayer的Activity界面
-                亦可使用tv版的TvPlayer的View控件和TvFullScreenPlayer的Activity界面
+
+0.3 使用view    可使用最基础的SimplePlayer；
+                亦可使用phone版的PhonePlayer的View控件和FullScreenPlayer的Activity界面；
+                亦可使用tv版的TvPlayer的View控件和TvFullScreenPlayer的Activity界面；
                 具体使用可参照以下使用介绍：
     
 #1、主要有五个Player可供使用：
