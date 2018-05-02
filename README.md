@@ -63,12 +63,11 @@
     在layout的xml文件相应位置
     添加View控件：com.huan.huaxia.chxplayer.widght.hxplayer.PhonePlayer
     #
-    
     1)TransitPlayer中处理一些phonePlayer中混乱的逻辑；
-    2)setOnVideoScreenMoveListener()屏幕滑动监听
-    void moveX(float percent);垂直方向，向上为正，向下为负；
-    void moveLeftY(float percent);水平向左，>0；
-    void moveRightY(float percent);水平向右,>0。
+    2)setOnVideoScreenMoveListener()屏幕滑动监听 
+    void moveX(float percent);垂直方向，向上为正，向下为负； 
+    void moveLeftY(float percent);水平向左，>0；
+    void moveRightY(float percent);水平向右,>0。
     
 #效果：继承SimplePlayer，可设置全屏和大小屏切换，可监听屏幕滑动事件，可双击暂停或播放
 
