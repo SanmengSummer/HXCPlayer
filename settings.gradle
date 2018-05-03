@@ -1,1 +1,1 @@
-include ':chxplayer', ':demo'
+include ':sumplayer', ':demo'
