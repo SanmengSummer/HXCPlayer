@@ -9,13 +9,13 @@
     tools:context=".DemoTestActivity">
 
 
-    <com.huan.huaxia.chxplayer.widght.hxplayer.PhonePlayer
+    <com.summer.chxplayer.widght.hxplayer.PhonePlayer
         android:id="@+id/player_video"
         android:layout_width="@dimen/x300"
         android:layout_height="@dimen/x200" />
 
 
-    <com.huan.huaxia.chxplayer.widght.hxplayer.TvPlayer
+    <com.summer.chxplayer.widght.hxplayer.TvPlayer
         android:id="@+id/player_video2"
         android:layout_width="@dimen/x300"
         android:layout_height="@dimen/x200" />

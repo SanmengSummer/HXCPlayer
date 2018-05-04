@@ -6,9 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.huan.huaxia.chxplayer.widght.hxplayer.PhonePlayer;
-import com.huan.huaxia.chxplayer.widght.hxplayer.TvPlayer;
-import com.huan.huaxia.chxplayer.widght.model.MediaModel;
+import com.summer.chxplayer.widght.hxplayer.PhonePlayer;
+import com.summer.chxplayer.widght.hxplayer.TvPlayer;
+import com.summer.chxplayer.widght.model.MediaModel;
 
 import java.util.ArrayList;
 

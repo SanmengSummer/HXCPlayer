@@ -12,11 +12,11 @@
 
     <application>
         <activity
-            android:name=".widght.hxplayer.FullScreenPlayer"
+            android:name="com.summer.chxplayer.widght.hxplayer.FullScreenPlayer"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".widght.hxplayer.TvFullScreenPlayer"
+            android:name="com.summer.chxplayer.widght.hxplayer.TvFullScreenPlayer"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
