@@ -173,7 +173,6 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
 
     @Override
     protected void onDestroy() {
-        player.isSkip = false;
         mHandler.removeCallbacksAndMessages(UPDATE_PLAYTIME);
         super.onDestroy();
     }

@@ -109,24 +109,6 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
         controller.setBackgroundColor(Color.TRANSPARENT);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.addView(controller, params);
-//        mRecyclerView = controller.mRecyclerView;
-//        mRl = controller.mRl;
-//        mIbBack = controller.mIbBack;
-//        mName = controller.mName;
-//        mIvPlayPause = controller.mIvPlayPause;
-//        mSbProgress = controller.mSbProgress;
-//        mTvMusicTime = controller.mTvMusicTime;
-//        mTvMoveTime = controller.mTvMoveTime;
-//        mIvList = controller.mIvList;
-//        mIvPlay = controller.mIvPlay;
-//        mIvZoom = controller.mIvZoom;
-//        mIvVolume = controller.mIvVolume;
-//        mIvScreenLuminance = controller.mIvScreenLuminance;
-//        mLlVolume = controller.mLlVolume;
-//        mLlLuminance = controller.mLlLuminance;
-//        mPbVolume = controller.mPbVolume;
-//        mTvScreenLuminance = controller.mTvScreenLuminance;
-//        mPlayListAdapter = controller.mPlayListAdapter;
         onPointListener(this);
     }
 
@@ -227,7 +209,6 @@ public class TransitPlayer extends SimplePlayer implements OnControllerListener,
             playError = false;
             setLoadingVisibility(View.VISIBLE);
             if (null != mPlayList) setVideoPath(mPlayList.get(index).videoPath);
-
         }
         playPause();
 

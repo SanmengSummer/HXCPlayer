@@ -39,7 +39,6 @@ public class SimplePlayer extends BasePlayer {
     protected boolean isSbProgressChange;
     protected boolean isChangePlayerSize;
     protected boolean isFullScreen;
-    protected boolean isSkip;
     protected boolean isTV;//是否是TV端播放器，默认不是；
     protected ArrayList<MediaModel> mPlayList;
     protected AudioManager audioManager;
@@ -54,6 +53,7 @@ public class SimplePlayer extends BasePlayer {
     private boolean hidePlayerImage;
     private boolean hideLoading;
     protected boolean showZoomPlayer;
+    private boolean isNotInitLoad;
 
     public SimplePlayer(Context context) {
         super(context);
@@ -168,7 +168,6 @@ public class SimplePlayer extends BasePlayer {
         Bundle outState = setBundle(isChangePlayerSize);
         mInstance.saveState(outState);
         mInstance.skipFullScreenPlayer((Activity) mContext, this);
-        isSkip = true;
     }
 
     /**
@@ -203,6 +202,7 @@ public class SimplePlayer extends BasePlayer {
 
     @Override
     public void start() {
+        isNotInitLoad=true;
         playerImage.setVisibility(GONE);
         if (!playError)
         setLoadingVisibility(VISIBLE);
@@ -235,7 +235,7 @@ public class SimplePlayer extends BasePlayer {
             public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
                 playError = true;
                 setLoadingVisibility(GONE);
-                if (!isSkip)
+                if (isNotInitLoad)
                     setDialogOrPoint(i);
                 return true;
             }
