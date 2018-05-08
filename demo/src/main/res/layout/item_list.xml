@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.summer.chxplayer.widght.hxplayer.PhonePlayer xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pp"
+    android:layout_width="@dimen/x300"
+    android:layout_height="@dimen/x200" />

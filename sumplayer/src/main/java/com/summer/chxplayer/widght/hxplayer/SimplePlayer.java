@@ -54,6 +54,8 @@ public class SimplePlayer extends BasePlayer {
     private boolean hideLoading;
     protected boolean showZoomPlayer;
     private boolean isNotInitLoad;
+    private boolean showLast;
+    private boolean notPlayNext;
 
     public SimplePlayer(Context context) {
         super(context);
@@ -105,10 +107,12 @@ public class SimplePlayer extends BasePlayer {
 
     @Override
     public void setVideoPath(String path) {
-        if (null == mPlayList) {
+        if (null == mPlayList || mPlayList.isEmpty()) {
             MediaModel mediaModel = new MediaModel();
             mediaModel.setVideoPath(path);
+            mediaModel.setImagPath("");
             mediaModel.setName("No name");
+            mPlayList = new ArrayList<>();
             mPlayList.add(mediaModel);
         }
         IjkMediaPlayer.loadLibrariesOnce(null);
@@ -135,7 +139,7 @@ public class SimplePlayer extends BasePlayer {
             index++;
             setVideoPath(mPlayList.get(index).videoPath);
             if (!isPlaying()) start();
-        } else
+        } else if (showLast)
             ToastUtil.getInstance(mContext).Short(getContext().getString(R.string.text_last_video)).show();
 
     }
@@ -202,16 +206,16 @@ public class SimplePlayer extends BasePlayer {
 
     @Override
     public void start() {
-        isNotInitLoad=true;
+        isNotInitLoad = true;
         playerImage.setVisibility(GONE);
-        if (!playError)
-        setLoadingVisibility(VISIBLE);
+        if (playError)
+            setLoadingVisibility(VISIBLE);
         super.start();
     }
 
     public void setLoadingVisibility(int visibility) {
         if (null != loading)
-        loading.setVisibility(visibility);
+            loading.setVisibility(visibility);
     }
 
     public void setPlayerImageVisibility(int visibility) {
@@ -226,7 +230,7 @@ public class SimplePlayer extends BasePlayer {
             public void onCompletion(IMediaPlayer iMediaPlayer) {
                 setLoadingVisibility(GONE);
                 if (isFullScreen && index == mPlayList.size()) ((Activity) mContext).finish();
-                playNext();
+                if (notPlayNext) playNext();
             }
         };
         //播放错误调用
@@ -340,6 +344,16 @@ public class SimplePlayer extends BasePlayer {
         this.isChangePlayerSize = isChangePlayerSize;
     }
 
+    //设置是否展示播放完所有的视频后的toast 默认false
+    public void setShowLast(boolean showLast) {
+        this.showLast = showLast;
+    }
+
+    //设置是否自动播放下一个视频 默认false（播放下一个）true为不自动播放
+    public void setNotPlayNext(boolean notPlayNext) {
+        this.notPlayNext = notPlayNext;
+    }
+
     @Override
     public void releaseWithoutStop() {
         super.releaseWithoutStop();
@@ -347,7 +361,6 @@ public class SimplePlayer extends BasePlayer {
         if (showZoomPlayer) {
             unRegisterReceiver();
         }
-//        pause();
     }
 
     //发送全屏切小屏参数传递的广播

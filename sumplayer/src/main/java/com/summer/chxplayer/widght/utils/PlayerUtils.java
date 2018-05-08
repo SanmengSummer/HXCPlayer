@@ -1,6 +1,7 @@
 package com.summer.chxplayer.widght.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.summer.chxplayer.widght.hxplayer.FullScreenPlayer;
+import com.summer.chxplayer.widght.hxplayer.PhonePlayer;
 import com.summer.chxplayer.widght.hxplayer.SimplePlayer;
 import com.summer.chxplayer.widght.hxplayer.TvFullScreenPlayer;
 import com.summer.chxplayer.widght.model.MediaModel;
@@ -28,6 +30,7 @@ public class PlayerUtils {
     private boolean isFullScreen;
     private boolean isTV;
     private Bundle instanceState;
+    private static Context mContext;
 
     /**
      * 仅跳转到播放Activity
@@ -118,6 +121,11 @@ public class PlayerUtils {
     }
 
     public synchronized static PlayerUtils getInstance() {
+        return getInstance(null);
+    }
+
+    public static PlayerUtils getInstance(Context context) {
+        mContext = context;
         if (null == mInstance) {
             mInstance = new PlayerUtils();
         }
@@ -133,4 +141,6 @@ public class PlayerUtils {
         isTV = savedInstanceState.getBoolean(Param.BundleParam.isTV, false);
         instanceState = savedInstanceState;
     }
+
+    public PhonePlayer mediaPlayer = new PhonePlayer(mContext);
 }
