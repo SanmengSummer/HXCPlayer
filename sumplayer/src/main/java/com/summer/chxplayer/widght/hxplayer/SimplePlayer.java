@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-
 /**
  * 简单Player
  * Created by huaxia on 2017/11/9.

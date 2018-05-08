@@ -142,7 +142,7 @@ public class DemoTestActivity extends AppCompatActivity {
     }
 
     public class MyHolder extends RecyclerView.ViewHolder {
-        private ListPhonePlayer video;
+        private PhonePlayer video;
 
         public MyHolder(View itemView) {
             super(itemView);
