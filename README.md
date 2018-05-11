@@ -2,7 +2,7 @@
 
 #0、使用初始化：
 
-0.1 添加依赖    compile 'com.huan.huaxia:chxplayer:1.2.1'
+0.1 添加依赖    compile 'summer.sumplayer:1.0.3'
 
 0.2 具体Demo    https://github.com/SanmengSummer/HXCPlayer
 
