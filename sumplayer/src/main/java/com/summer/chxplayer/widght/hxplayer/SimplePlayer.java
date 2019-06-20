@@ -32,7 +32,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  * Created by huaxia on 2017/11/9.
  */
 
-public class SimplePlayer extends BasePlayer {
+public class SimplePlayer extends BasePlayer implements PlayerInterFace {
     protected int height;
     protected int width;
     protected boolean isSbProgressChange;
@@ -167,7 +167,7 @@ public class SimplePlayer extends BasePlayer {
             showZoomPlayer = true;
             registerReceiver();
         }
-        PlayerUtils mInstance = PlayerUtils.getInstance();
+        PlayerUtils mInstance = PlayerUtils.getInstance(this.getContext());
         Bundle outState = setBundle(isChangePlayerSize);
         mInstance.saveState(outState);
         mInstance.skipFullScreenPlayer((Activity) mContext, this);

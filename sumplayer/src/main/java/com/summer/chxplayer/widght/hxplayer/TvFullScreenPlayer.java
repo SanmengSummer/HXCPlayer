@@ -1,5 +1,6 @@
 package com.summer.chxplayer.widght.hxplayer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -28,7 +29,7 @@ import static android.view.View.VISIBLE;
 /**
  * tv版全屏player
  */
-public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListItemListener, OnControllerListener, TvPlayer.PointListener {
+public class TvFullScreenPlayer extends Activity implements OnPlayListItemListener, OnControllerListener, TvPlayer.PointListener {
     private TvPlayer player;
     private ArrayList<MediaModel> playList;
     private boolean isPlaying;
@@ -63,6 +64,12 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tv_full_screen);
+        initIntent();
+        setPlayer();
+        setController();
+    }
+
+    private void initIntent() {
         if (getIntent().hasExtra(Param.Constants.playlist))
             playList = getIntent().getParcelableArrayListExtra(Param.Constants.playlist);
         if (getIntent().hasExtra(Param.Constants.path))
@@ -77,8 +84,6 @@ public class TvFullScreenPlayer extends AppCompatActivity implements OnPlayListI
             showDialog = transBundle.getBoolean(Param.BundleParam.showDialog, false);
             showPoint = transBundle.getBoolean(Param.BundleParam.showPoint, false);
         }
-        setPlayer();
-        setController();
     }
 
     private void setPlayer() {

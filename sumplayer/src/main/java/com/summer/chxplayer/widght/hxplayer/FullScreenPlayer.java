@@ -1,5 +1,6 @@
 package com.summer.chxplayer.widght.hxplayer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 /**
  * Created by huaxia on 2017.10.12
  */
-public class FullScreenPlayer extends AppCompatActivity implements TransitPlayer.ExitListener {
+public class FullScreenPlayer extends Activity implements TransitPlayer.ExitListener {
     private PhonePlayer player;
     private ArrayList<MediaModel> playList;
     private boolean isPlaying;
@@ -53,6 +54,10 @@ public class FullScreenPlayer extends AppCompatActivity implements TransitPlayer
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+        init();
+    }
+
+    private void init() {
         if (getIntent().hasExtra(Param.Constants.playlist))
             playList = getIntent().getParcelableArrayListExtra(Param.Constants.playlist);
         if (getIntent().hasExtra(Param.Constants.path))

@@ -96,6 +96,7 @@ public class PlayerUtils {
         }
     }
 
+    //使用原生改变控件尺寸
     private static void setNativeFull(Activity activity, SimplePlayer player, boolean isFullScreen, boolean isTV, int width, int height) {
         WindowManager manager = activity.getWindowManager();
         DisplayMetrics metrics = new DisplayMetrics();
@@ -120,10 +121,6 @@ public class PlayerUtils {
         }
     }
 
-    public synchronized static PlayerUtils getInstance() {
-        return getInstance(null);
-    }
-
     public static PlayerUtils getInstance(Context context) {
         mContext = context;
         if (null == mInstance) {
@@ -141,6 +138,4 @@ public class PlayerUtils {
         isTV = savedInstanceState.getBoolean(Param.BundleParam.isTV, false);
         instanceState = savedInstanceState;
     }
-
-    public PhonePlayer mediaPlayer = new PhonePlayer(mContext);
 }
