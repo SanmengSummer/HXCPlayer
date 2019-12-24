@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="edu_tvplayer_transparent">#00000000</color>
+    <color name="edu_tvplayer_btn_pressed">#ff33b5e5</color>
+    <color name="edu_tvplayer_btn_focused">#ff0099cc</color>
+    <color name="edu_tvplayer_btn_normal">#292A2F</color>
+    <color name="edu_tvplayer_text_white">#FFFFFF</color>
+    <color name="edu_tvplayer_popup_bg_color">#EE666666</color>
+    <color name="edu_tvplayer_controller_bg_color">#4D292A2F</color>
+    <color name="edu_tvplayer_seekbar_progress_color">#1AA3D9</color>
+    <color name="edu_tvplayer_seekbar_secondaryProgress_color">#1A778877</color>
+    <color name="edu_tvplayer_seekbar_bg_color">#1F2124</color>
+    
+    
+    <!--<color name="elv_btn_pressed">#ff33b5e5</color>-->
+    <!--<color name="elv_btn_focused">#ff0099cc</color>-->
+    <!--<color name="elv_btn_normal">#00000000</color>-->
+    <!--<color name="elv_popup_bg_color">#EE666666</color>-->
+    <!--<color name="elv_separator_color">#BBBBBB</color>-->
+    <!--<color name="elv_popup_text_color">#FFFFFF</color>-->
+</resources>

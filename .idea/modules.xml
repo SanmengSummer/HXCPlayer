@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/HXCPlayer.iml" filepath="$PROJECT_DIR$/HXCPlayer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PlayerLibrary/PlayerLibrary.iml" filepath="$PROJECT_DIR$/PlayerLibrary/PlayerLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/sumplayer/sumplayer.iml" filepath="$PROJECT_DIR$/sumplayer/sumplayer.iml" />
     </modules>

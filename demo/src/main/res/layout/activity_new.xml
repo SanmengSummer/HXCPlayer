@@ -7,19 +7,26 @@
     tools:context="huaxia.demo.NewActivity">
 
     <Button
-        android:text="love"
         android:id="@+id/bt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="love" />
+        android:onClick="love"
+        android:text="love" />
 
     <Button
-        android:text="2"
-        android:layout_below="@id/bt"
         android:id="@+id/btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="go2demo" />
+        android:layout_below="@id/bt"
+        android:onClick="go2demo"
+        android:text="2" />
+
+    <Button
+        android:id="@+id/btn1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn"
+        android:text="player" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/re"

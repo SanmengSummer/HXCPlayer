@@ -1,0 +1,7 @@
+<resources>
+    <string name="edu_tvplayer_loading_text">加载中</string>
+    <string name="edu_tvplayer_exit_text">再次点击退出播放器</string>
+    <string name="edu_tvplayer_ok_btn">确定</string>
+    <string name="edu_tvplayer_load_media_error">当前视频暂时无法播放，请稍候重试！</string>
+    <string name="edu_tvplayer_no_permission_play">您需要购买，才能观看全部视频</string>
+</resources>

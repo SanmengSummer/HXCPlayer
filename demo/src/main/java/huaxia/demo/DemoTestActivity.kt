@@ -81,11 +81,6 @@ class DemoTestActivity : AppCompatActivity() {
         player_video?.pause()
     }
 
-    override fun onDestroy() {
-        System.exit(0)
-        super.onDestroy()
-    }
-
     private class MyAdapter(videoView: RecyclerView) : RecyclerView.Adapter<MyHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MyHolder {
             var view = LayoutInflater.from(parent?.context).inflate(R.layout.item_list, parent, false)

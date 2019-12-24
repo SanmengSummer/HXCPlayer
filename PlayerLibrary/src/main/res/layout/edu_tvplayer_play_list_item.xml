@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="@dimen/x120"
+                android:layout_height="@dimen/y50"
+                android:layout_marginLeft="@dimen/x10"
+                android:layout_marginRight="@dimen/x10"
+                android:background="@drawable/edu_tvplayer_play_list_item_selector"
+                android:clickable="true"
+                android:focusable="true">
+    
+    <TextView
+        android:id="@+id/tv_play_list_item_position"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="12"
+        android:textColor="@color/edu_tvplayer_text_white"
+        android:textSize="@dimen/x28"/>
+    
+    <ImageView
+        android:id="@+id/tv_play_list_item_label_curr_play"
+        android:layout_width="@dimen/x16"
+        android:layout_height="@dimen/x16"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/x14"
+        android:scaleType="fitCenter"
+        android:src="@drawable/edu_tvplayer_label_curr_play"/>
+    
+    <ImageView
+        android:id="@+id/tv_play_list_item_label_free"
+        android:layout_width="@dimen/x30"
+        android:layout_height="@dimen/x24"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/x4"
+        android:scaleType="fitCenter"
+        android:src="@drawable/edu_tvplayer_label_free"/>
+
+</RelativeLayout>

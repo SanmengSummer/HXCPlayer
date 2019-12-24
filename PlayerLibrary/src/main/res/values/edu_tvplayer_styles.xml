@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.NoTitleBar.Fullscreen">
+
+    </style>
+
+    <style name="EduTvPlayerDialogCommonStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+    
+    <style name="EduTvPlayer_bottom_anim_style" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/bottom_show_anim</item>
+        <item name="android:windowExitAnimation">@anim/bottom_hide_anim</item>
+    </style>
+
+    <!--<style name="edu_tvplayer_menulist_Animation" parent="android:Animation" >
+        <item name="android:windowEnterAnimation">@anim/edu_tvplayer_menulist_in_animation</item>
+        <item name="android:windowExitAnimation">@anim/edu_tvplayer_menulist_out_animation</item>
+    </style>-->
+
+</resources>

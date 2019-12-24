@@ -1,1 +1,1 @@
-include ':sumplayer', ':demo'
+include ':sumplayer', ':demo', ':PlayerLibrary'

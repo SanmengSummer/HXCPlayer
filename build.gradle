@@ -3,8 +3,9 @@
 buildscript {
     ext.kotlin_version = '1.3.31'
     repositories {
-        jcenter(){ url 'http://jcenter.bintray.com/'}
         google()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.2'
@@ -18,8 +19,9 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter(){ url 'http://jcenter.bintray.com/'}
         google()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        jcenter()
     }
     tasks.withType(Javadoc) {
         options.addStringOption('Xdoclint:none', '-quiet')
@@ -29,4 +31,15 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+ext {
+    compileSdkVersion = 23
+    buildToolsVersion = "25.0.3"
+    minSdkVersion = 14
+    targetSdkVersion = 26
+//    supportVersion = "25.3.1"
+    supportVersion = "24.2.0"
+    gsonVersion = "2.6.2"
+    tvRecyclerviewVersion = "1.0.7.11"
+    PLAYER_DIR_PATH = projectDir.getPath() +  "/PlayerLibrary/libs"
 }
