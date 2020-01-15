@@ -32,6 +32,9 @@ class NewActivity : AppCompatActivity(), View.OnClickListener {
 
     fun love(v: View) {
         love?.addLove()
+        val intent = Intent()
+        intent.setClass(this, MainActivity::class.java)
+        startActivity(intent)
     }
 
     private fun go2player() {
@@ -47,17 +50,18 @@ class NewActivity : AppCompatActivity(), View.OnClickListener {
 //        intent.addCategory(Intent.CATEGORY_LAUNCHER)
 //参数是包名，类全限定名，注意直接用类名不行
             val cn = ComponentName("tv.huan.tencentTV",
-                    "tv.huan.tencentTV.ui.home.LoadingPage")
+                    "tv.huan.tencent.ui.home.LoadingPage")
             intent.component = cn
-            intent.putExtra("content_id", "e7hi6lep1yc51ca")
+            intent.putExtra("toType", "1")
+            intent.putExtra("classId", "2")
+            intent.putExtra("srcId", "j6b8z5urtg2wj5h")
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            intent.action = Intent.ACTION_VIEW
+            intent.action = "tv.huan.tencentTV.LoadingPage"
             startActivity(intent)
+            finish()
         } catch (e: Exception) {
             println("程序出现了未知异常，可能是您的人品太差了。${e.message}")
         }
-
-
 //        startActivity(Intent(this, DemoTestActivity::class.java))
     }
 

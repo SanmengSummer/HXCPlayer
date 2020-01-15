@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+
+  <body style="background: #FFFFFF">
+
+
+
+    <div>
+      <p id="log"></p>
+    </div>
+    <div>
+      <button onclick="play()">调用腾讯播放</button>
+    </div>
+
+
+    <script>
+
+      function checkAppInstalled(packageName) {
+        if ("true" == STBAppManager.isAppInstalled(packageName)) {
+          return true;
+        }
+        return false;
+      }
+
+      function play() {
+        // var intentMessageOpen = "{\"appName\":\"tv.huan.tencentTV\",\"className\":\"tv.huan.tencent.ui.home.ActivityHome\",\"extra\":[{\"name\":\"albumId\",\"value\":\"90519200\"},{\"name\":\"vodId\",\"value\":\"90519200\"},{\"name\":\"userId\",\"value\":\"12345678901234567890123456789012\"}]}";
+        // var intentMessageInstall = "{\"action\":\"com.amt.appstore.action.LAUNCHER\",\"extra\":[{\"name\":\"extraKey\",\"value\":\"jumpId=8&appPkg=tv.huan.tencentTV&appExtra=albumId::90519200;vodId::90519200;userId::12345678901234567890123456789012\"}]}";
+        // if (checkAppInstalled("tv.huan.tencentTV")) {
+        //   STBAppManager.startAppByIntent(intentMessageOpen);
+        // } else {
+        //   STBAppManager.startAppByIntent(intentMessageInstall);
+        // }
+        STBAppManager.startAppByIntent("{\"action\":\"com.amt.appstore.action.LAUNCHER\",\"extra\":[{\"name\":\"extraKey\",\"value\":\"jumpId=8&appPkg=tv.huan.tencentTV&appExtra=albumId::90519200;vodId::90519200;userId::12345678901234567890123456789012\"}]}");
+      }
+
+      try {
+        var isInstalled = checkAppInstalled("tv.huan.tencentTV");
+        document.getElementById("log").innerHTML = "腾讯播放APK是否已安装：" + STBAppManager.isAppInstalled("tv.huan.tencentTV");
+      } catch (e) {
+	  
+        document.getElementById("log").innerHTML = "判断腾讯播放APK是否已安装失败";
+      }
+    </script>
+  </body>
+</html>
